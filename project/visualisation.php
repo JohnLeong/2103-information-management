@@ -1,13 +1,33 @@
 <!DOCTYPE html>
 <!-- Database connection-->
+
 <?php
 require_once('../protected/config.php');
 $conn = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+
 if ($conn->connect_error) {
     $errorMsg = "Connection failed: " . $conn->connect_error;
     $success = false;
 }
+else {
+    echo 'connected successfully';
+    $sql = "INSERT INTO suppliers (sname, sid)
+            VALUES ('BELLE NG', '00000')";
+
+    if ($conn->query($sql) === TRUE) 
+
+      echo 'New record created successfully';
+
+    else 
+      echo 'Error: ' . $sql . '<br>' . $conn->error;
+
+
+    $conn->close(); 
+}
+
 ?>
+    
+
 <html lang="en">
 
     <head>
@@ -38,10 +58,12 @@ if ($conn->connect_error) {
         <div class="container-fluid">
             <div class="row">
                 <div class="jumbotron banner">
-                    <h1 class="text-center banner-text">VISUALISATION</h1>
+                    <h1 class="text-center banner-text">VISUALISATION </h1>
                 </div>
             </div>
         </div>
         
         <!-- Banner Section End  -->
+        
+</html>
 
