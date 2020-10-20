@@ -1,9 +1,9 @@
 <?php
 session_start();
-define("DBHOST", "161.117.122.252");
-define("DBNAME", "p1_5");
-define("DBUSER", "p1_5");
-define("DBPASS", "96rjYQmInJ");
+define("DBHOST", "rm-gs595dd89hu8175hl6o.mysql.singapore.rds.aliyuncs.com");
+define("DBNAME", "ICT2103_AY20_MySQL");
+define("DBUSER", "ict1902691tlx");
+define("DBPASS", "XLT1962091");
 
 define('PAYPAL_ID', 'creole@business.example.com'); 
 define('PAYPAL_SANDBOX', TRUE); //TRUE or FALSE 
