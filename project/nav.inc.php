@@ -18,14 +18,9 @@ if (isset($_SESSION['shopping_cart'])) {
             <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav">
                     <li><a href="homepage.php" title="Visit the homepage">HOME</a></li>
-                    <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="aboutus.html">WHO WE ARE<span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="aboutus.php" title="Read more about us">ABOUT US</a></li>
-                            <li><a href="members.php" title="Meet out members">OUR MEMBERS</a></li>
-                        </ul>
                     <li><a href="contact-us.php" title="Send us a message">CONTACT US</a></li>
-                    <li><a href="shop.php" title="Visit our shop">SHOP</a></li>
-                    <li><a href="visualisation.php" title="Visit our shop">VISUALISATION</a></li>
+                    <li><a href="shop.php" title="Find Centre's">CENTRE'S</a></li>
+                    <li><a href="visualisation.php" title="Data Visualisation">VISUALISATION</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <?php
