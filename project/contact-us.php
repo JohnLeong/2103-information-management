@@ -76,9 +76,9 @@ and open the template in the editor.
                         <h2> Message Us </h2>
                         <hr/>
                         <p  id="msgUsp" >
-                            If you have any enquries, feel free to contact our team for further assistance.
-                            You may contact us via three ways by filling up the form, emailing us or contact us via our hotline.
-                            Our team will reply to your enquires within 3 working days. For urgent matters, please call in our hotline.
+                            If you have any enquiry, feel free to contact our team for further assistance.
+                            You may contact us via three ways: filling up the form, emailing us or contact us via our hotline.
+                            Our team will get back to you as soon as possible. For urgent matters, please dial in via our hotline.
                         </p>
                     </div>
 

@@ -1,0 +1,44 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 24 Oct 2020, 11:26:47 pm
+    Author     : Alicia teo
+*/
+
+
+/*visualisation page -- piechart*/
+
+#piechart{
+    width: 600px; 
+    height: 500px;
+}
+
+#piechart_table{
+    width:400px;
+    height:500px;
+    font-size: 20px;
+    text-align: center;
+    border-collapse: collapse;
+    margin: 30px;
+    padding: 30px;
+    border-collapse: collapse;
+  
+}
+
+#piechart_table td, #piechart_table th {
+  border: 1px solid #000000;
+  padding: 8px;
+  background: white;
+}
+
+#piechart_table th{
+    background-color: #cdcdcd;
+    color:black;
+    border: 1px solid #000000;
+    text-align: center;   
+    
+}
+
