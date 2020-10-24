@@ -608,16 +608,32 @@ select.form-control:focus {
     background-color: white;
     border-radius: 7px;
     
-    position: -webkit-sticky;
-    position: sticky;
     top: 0;
     font-family: "Roboto"
     
 }
 
+.centre_card {
+    margin-bottom: 20px;
+}
+
+.filter_label{
+    text-align: left;
+    display: block;
+}
+
+.filter_checkbox{
+    text-align: left;
+}
+
 .card{
     
     border-radius: 7px;
+    text-align: left;
+}
+
+.page_button{
+    margin-right: 10px;
 }
 
 
