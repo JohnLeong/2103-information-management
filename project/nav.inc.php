@@ -19,7 +19,7 @@ if (isset($_SESSION['shopping_cart'])) {
                 <ul class="nav navbar-nav">
                     <li><a href="homepage.php" title="Visit the homepage">HOME</a></li>
                     <li><a href="contact-us.php" title="Send us a message">CONTACT US</a></li>
-                    <li><a href="shop.php" title="Find Centre's">CENTRE'S</a></li>
+                    <li><a href="centres.php" title="Find Centres">CENTRES</a></li>
                     <li><a href="visualisation.php" title="Data Visualisation">VISUALISATION</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">

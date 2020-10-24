@@ -48,32 +48,22 @@ require_once('../protected/config.php');
                         <article class='aboutuscontainer' id="aboutusarticle">
                             <h2>About Us</h2>
                             <p class="aboutus">
-                                At Creole, we are set to revolutionize simple daily fashion which mixes both Asian and Western style in our clothing.
-                                With our online shopping services, we guarantee that you will have an enjoyable, comfortable and secure experience. With an extensive
-                                catalog and seasonal release, be assured that our clothing is always up to date and trendy. With Creole, we offer
-                                you the most affordable and quality clothing direct from out facility. Shop with Creole, Shop with us. 
+                                The purpose of this website is to provide a convenient platform for parents with children to view information on the various childcare centres in Singapore and to help them understand the importance of an early childhood education. This platform gathers all the information required of the childcare centres, provided by the Early Childhood Development Agency, and displays them on the website for users to view.
+                            </p>
+                            <p class="aboutus">
+                                Creole allow parents to estimate the cost and view the type of subsidies that they qualify for, along with other search filters that they can use, to specify requirements such as dietary options, incidental charges etc. This platform allows parents to make informed decisions in selecting a suitable childcare centre for their child.
                             </p>
                             <hr class="us">
                             <h2>Our Mission</h2>
                             <p class="aboutus">
-                                To provide affordable and quality fusion fashion.
+                                To assist parents in making informed decisions when choosing a childcare centre for their children.
                             </p>
                             <hr class="us">
-                            <h2>Our Vision</h2>
-                            <p class="aboutus">
-                                At Creole we believe that through our
-
-                                culturally inspired fashion, we can
-
-                                unite the world through bringing
-
-                                awareness of the diverse cultures that exists.
-                            </p>
                             <hr>
                             <h2>Our Story</h2>
                             <p>
-                                With a lack of simplistic yet culturally intriguing kind of fashion in the scene. Creole was setup to introduce to the
-                                community, fashion that is aimed to bring awareness of diverse culture and unite the community through our brand of clothing.
+                                With a lack of platforms to view collated data on the available childcare centres in Singapore, Creole was setup by a group of software engineering students from the Singapore Institute of Technology
+                                to provide parents with an easy and convenient way to find suitable childcare centres in Singapore.
                             </p>
                         </article>
                     </section>
