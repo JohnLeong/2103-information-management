@@ -308,7 +308,6 @@ define("results_per_page", 10);
                                     //$sql .= " LIMIT " . results_per_page;
 
                                     $count_sql = "SELECT COUNT(*) FROM sql1902691tlx.centre WHERE TRUE" . $sql;
-                                    echo $count_sql;
 
                                     $num_results = 0;
 
@@ -323,7 +322,6 @@ define("results_per_page", 10);
 
                                     $start_page = ($page - 1) * results_per_page;
                                     $actual_sql = "SELECT * FROM sql1902691tlx.centre WHERE TRUE" . $sql . " LIMIT " . $start_page . "," . results_per_page;
-                                    echo $actual_sql;
 
                                     //Execute actual query to get data
                                     if ($result = mysqli_query($conn, $actual_sql)) {
@@ -336,7 +334,7 @@ define("results_per_page", 10);
 
                                                 echo '<div class="row">';
                                                 echo '<div class="col-md-4">';
-                                                echo '<img src="images/products/product-01/1.jpeg" alt="' . $row["centre_name"] . '" class="img-responsive " /></a>';
+                                                echo '<img src="images/centre.jpg" alt="' . $row["centre_name"] . '" class="img-responsive " />';
                                                 echo '</div>';
 
                                                 //echo'<a href="centre_info.php?centre_code=' . $row["centre_code"] . '">';
