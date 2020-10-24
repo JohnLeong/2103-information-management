@@ -108,17 +108,17 @@ define("results_per_page", 10);
                                     <select class="form-control" id="opening_days_filter" name="opening_days_filter">
 
                                         <option value="all_days" <?php
-                                        if ($_GET['opening_days_filter'] === 'all_days') {
+                                        if (isset($_GET['opening_days_filter']) && $_GET['opening_days_filter'] === 'all_days') {
                                             echo("selected");
                                         }
                                         ?>>Weekdays + Saturday</option>
                                         <option value="weekdays" <?php
-                                        if ($_GET['opening_days_filter'] === 'weekdays') {
+                                        if (isset($_GET['opening_days_filter']) && $_GET['opening_days_filter'] === 'weekdays') {
                                             echo("selected");
                                         }
                                         ?>>Weekdays only</option>
                                         <option value="saturday" <?php
-                                        if ($_GET['opening_days_filter'] === 'saturday') {
+                                        if (isset($_GET['opening_days_filter']) && $_GET['opening_days_filter'] === 'saturday') {
                                             echo("selected");
                                         }
                                         ?>>Saturday only</option>
@@ -134,32 +134,32 @@ define("results_per_page", 10);
                                     <select class="form-control" id="child_group_filter" name="child_group_filter">
 
                                         <option value="infant_vacancy" <?php
-                                        if ($_GET['child_group_filter'] === 'infant_vacancy') {
+                                        if (isset($_GET['child_group_filter']) && $_GET['child_group_filter'] === 'infant_vacancy') {
                                             echo("selected");
                                         }
                                         ?>>Infant</option>
                                         <option value="pg_vacancy" <?php
-                                        if ($_GET['child_group_filter'] === 'pg_vacancy') {
+                                        if (isset($_GET['child_group_filter']) && $_GET['child_group_filter'] === 'pg_vacancy') {
                                             echo("selected");
                                         }
                                         ?>>PG</option>
                                         <option value="n1_vacancy" <?php
-                                        if ($_GET['child_group_filter'] === 'n1_vacancy') {
+                                        if (isset($_GET['child_group_filter']) && $_GET['child_group_filter'] === 'n1_vacancy') {
                                             echo("selected");
                                         }
                                         ?>>Nursery 1</option>
                                         <option value="n2_vacancy" <?php
-                                        if ($_GET['child_group_filter'] === 'n2_vacancy') {
+                                        if (isset($_GET['child_group_filter']) && $_GET['child_group_filter'] === 'n2_vacancy') {
                                             echo("selected");
                                         }
                                         ?>>Nursery 1</option>
                                         <option value="k1_vacancy" <?php
-                                        if ($_GET['child_group_filter'] === 'k1_vacancy') {
+                                        if (isset($_GET['child_group_filter']) && $_GET['child_group_filter'] === 'k1_vacancy') {
                                             echo("selected");
                                         }
                                         ?>>Kindergarten 1</option>
                                         <option value="k2_vacancy" <?php
-                                        if ($_GET['child_group_filter'] === 'k2_vacancy') {
+                                        if (isset($_GET['child_group_filter']) && $_GET['child_group_filter'] === 'k2_vacancy') {
                                             echo("selected");
                                         }
                                         ?>>Kindergarten 2</option>
@@ -170,17 +170,17 @@ define("results_per_page", 10);
                                     <select class="form-control" id="vacancy_filter" name="vacancy_filter">
 
                                         <option value="anytime" <?php
-                                        if ($_GET['vacancy_filter'] === 'anytime') {
+                                        if (isset($_GET['vacancy_filter']) && $_GET['vacancy_filter'] === 'anytime') {
                                             echo("selected");
                                         }
                                         ?>>Anytime</option>
                                         <option value="Immediate" <?php
-                                        if ($_GET['vacancy_filter'] === 'Immediate') {
+                                        if (isset($_GET['vacancy_filter']) && $_GET['vacancy_filter'] === 'Immediate') {
                                             echo("selected");
                                         }
                                         ?>>Immediate</option>
                                         <option value="Within 1 Year" <?php
-                                        if ($_GET['child_group_filter'] === 'Within 1 Year') {
+                                        if (isset($_GET['vacancy_filter']) && $_GET['child_group_filter'] === 'Within 1 Year') {
                                             echo("selected");
                                         }
                                         ?>>Within 1 year</option>
@@ -317,12 +317,12 @@ define("results_per_page", 10);
                                         $num_results = mysqli_fetch_array($result)[0];
                                         $result->free_result();
                                     }
-
+                                    
                                     $num_pages = ceil($num_results / results_per_page);
-                                    $page = $_GET['page'] ? $_GET['page'] : 1;
+                                    $page = isset($_GET['page']) ? $_GET['page'] : 1;
 
                                     $start_page = ($page - 1) * results_per_page;
-                                    $actual_sql = "SELECT * FROM sql1902691tlx.centre WHERE TRUE" . $sql . "LIMIT " . $start_page . "," . results_per_page;
+                                    $actual_sql = "SELECT * FROM sql1902691tlx.centre WHERE TRUE" . $sql . " LIMIT " . $start_page . "," . results_per_page;
                                     echo $actual_sql;
 
                                     //Execute actual query to get data
@@ -339,12 +339,12 @@ define("results_per_page", 10);
                                                 echo '<img src="images/products/product-01/1.jpeg" alt="' . $row["centre_name"] . '" class="img-responsive " /></a>';
                                                 echo '</div>';
 
-                                                echo'<a href="centre_info.php?id=' . $row["centre_code"] . '">';
+                                                //echo'<a href="centre_info.php?centre_code=' . $row["centre_code"] . '">';
 
                                                 echo'<div class="card-body">';
 
                                                 echo'<div class="card-title">';
-                                                echo'<a href= "product.php?id=' . $row["centre_code"] . '"><h3>' . $row["centre_name"] . '</h3></a>';
+                                                echo'<a href= "centre_info.php?centre_code=' . $row["centre_code"] . '"><h3>' . $row["centre_name"] . '</h3></a>';
                                                 echo'</div>';
 
                                                 echo'<p class="card-text">Address: ' . $row["centre_address"] . '</p>';
