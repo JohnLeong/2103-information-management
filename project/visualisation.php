@@ -3,26 +3,21 @@
 
 <?php
 require_once('../protected/config.php');
-$conn = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
- $sql = "SELECT COUNT(DISTINCT centre_name), type_of_citizenship, AVG(fees)
-FROM centre_service
-WHERE fees IN (SELECT fees FROM centre_service)
-GROUP BY type_of_citizenship
-ORDER BY AVG(fees) ASC;"; 
-
-$fire = mysqli_query($conn, $sql);
-
-if ($conn->connect_error) {
-    $errorMsg = "Connection failed: " . $conn->connect_error;
+$connect = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME);
+if ($connect->connect_error) {
+    $errorMsg = "Connection failed: " . $connect->connect_error;
     $success = false;
-}
-else {
-    echo 'connected';
-    while ($result = mysqli_fetch_assoc($fire)){
-                echo "['".$result["COUNT(DISTINCT centre_name)"]."',".$result["type_of_citizenship"].",".$result["AVG(fees)"]."]";    
-            }
-}
+} else {
 
+//$connect = mysqli_connect("localhost", "root", "", "testing");
+    $query = "SELECT type_of_citizenship, AVG(fees) as fees
+                FROM centre_service
+                WHERE fees IN (SELECT fees FROM centre_service)
+                GROUP BY type_of_citizenship
+                ORDER BY AVG(fees) ASC";
+    $result = mysqli_query($connect, $query);
+
+}
 ?>
     
 
@@ -47,33 +42,29 @@ else {
     
         <script type="text/javascript">
         <!-- illustration of pie chart Section  -->
-        google.charts.load('current', {'packages':['corechart']});
-        google.charts.setOnLoadCallback(drawChart);
+                    google.charts.load('current', {
+                'packages': ['corechart']});
+            google.charts.setOnLoadCallback(drawChart);
 
-        function drawChart() {
-            var data = google.visualization.arrayToDataTable([
-              ['Count of centre name', 'Type of citizenship', 'Average cost'],
-              ['SPR', 768.42,1548],
-              ['SC', 824.42, 1534],
-              ['Others', 867.64, 1507],
+            function drawChart() {
 
-              <?php
-
-                while ($result = mysqli_fetch_assoc($fire)){
-                   echo "['".$result["COUNT(DISTINCT centre_name)"]."',".$result["type_of_citizenship"].",".$result["AVG(fees)"]."]";
-
+                var data = google.visualization.arrayToDataTable([
+                    ['Citizenship', 'Average Fees'],
+                <?php
+                while ($row = mysqli_fetch_array($result)) {
+                    echo "['" . $row["type_of_citizenship"] . "', " . $row["fees"] . "],";
                 }
-
                 ?>
-            ]);
-              
-            var options= {
-              title: 'Count of childcare centre and their average costs based on type of citizenships'
-            };
+                ]);
 
-            var chart = new google.visualization.PieChart(document.getElementById('piechart'));
-            chart.draw(data, options);
-        }
+                var options = {
+                    title: 'Average costs of childcare centres in Singapore based on each type of citizenships'
+                };
+
+                var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+                chart.draw(data, options);
+            }
         </script> 
         <!-- illustration of pie chart Section  -->
     
@@ -96,12 +87,12 @@ else {
         
        <!-- table of pie chart Section  -->
        <body>
-           <div class="piechart_css" id="piechart"></div>
+           <div id="piechart"></div>
            
            <div id ="piechart_table">
             <table>
                <tr>
-                   <th>COUNT of center name</th>
+                   
                    <th>types of citizenship</th>
                    <th>Average cost</th>
                </tr>
@@ -109,7 +100,7 @@ else {
                <?php
                require_once('../protected/config.php');
                 $conn = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
-                $sql = "SELECT COUNT(DISTINCT centre_name), type_of_citizenship, AVG(fees)
+                $sql = "SELECT type_of_citizenship, AVG(fees)
                 FROM centre_service
                 WHERE fees IN (SELECT fees FROM centre_service)
                 GROUP BY type_of_citizenship
@@ -122,7 +113,7 @@ else {
                     $success = false;
                 }
                while ($result = mysqli_fetch_assoc($fire)){
-                echo "<tr><td>".$result["COUNT(DISTINCT centre_name)"]."</td><td>".$result["type_of_citizenship"]."</td><td>".$result["AVG(fees)"]."</td></tr>";
+                echo "<tr><td>".$result["type_of_citizenship"]."</td><td>".$result["AVG(fees)"]."</td></tr>";
 
                 }
                 echo "</table>";
