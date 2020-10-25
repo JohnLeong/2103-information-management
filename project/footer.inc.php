@@ -23,9 +23,9 @@
                     </a>
                 </p>
                 <p> <a  class="footer-margin mail" title="Write us an email"
-                        href="mailto:businesscreole.contact@gmail.com?Subject=ViaWebisteEmail:" target="_top">
+                        href="mailto:chidlcare-centre-support@gmail.com?Subject=ViaWebisteEmail:" target="_top">
                         <span class="glyphicon glyphicon-envelope"></span>
-                        businesscreole.contact@gmail.com
+                        chidlcare-centre-support@gmail.com
                     </a>
                 </p>                  
             </div>
@@ -34,8 +34,8 @@
                 <ul class="list-unstyled footer-margin">
                     <li> <a class="footerLink" href="homepage.php" title="Visit out homepage"> Home</a></li>
                     <li> <a class="footerLink" href="aboutus.php" title="Read more about us"> About Us</a></li>
-                    <li> <a class="footerLink" href="shop.php" title="Visit our store"> Shop</a></li>
-                    <li> <a class="footerLink" href="contact-us.php" title="Reach out to us"> Contact Us</a></li>
+                    <li> <a class="footerLink" href="centres.php" title="Look for Centres"> Shop</a></li>
+                    <li> <a class="footerLink" href="visualisation.php" title="Statistics"> Visualisation</a></li>
                 </ul>
                 <a href="https://www.facebook.com/" class="fa fa-facebook" title="Visit our facebook page"></a>
                 <a href="https://www.instagram.com/" class="fa fa-instagram" title="Visit our instagram page"></a>
