@@ -100,7 +100,7 @@ h2,h3{
     color:#E98074;
 }
 h4 {
-    color:black;
+    color:#E98074;
 }
 p{
     color: #8E8D84;
@@ -220,7 +220,7 @@ iframe{
 }
 
 #price {
-    font-size: 35px;
+    font-size: 15px;
     font-weight: bold;
 }
 
@@ -608,16 +608,43 @@ select.form-control:focus {
     background-color: white;
     border-radius: 7px;
     
-    position: -webkit-sticky;
-    position: sticky;
     top: 0;
     font-family: "Roboto"
     
 }
 
+.centre_info_cell{
+    padding-right: 30px;
+    padding-left: 4px;
+    padding-top: 4px;
+    border:1px solid #000;
+}
+
+tr td:last-child{
+    white-space:nowrap;
+}
+
+.centre_card {
+    margin-bottom: 20px;
+}
+
+.filter_label{
+    text-align: left;
+    display: block;
+}
+
+.filter_checkbox{
+    text-align: left;
+}
+
 .card{
     
     border-radius: 7px;
+    text-align: left;
+}
+
+.page_button{
+    margin-right: 10px;
 }
 
 
@@ -651,4 +678,7 @@ p.aboutus{
       float: right !important;
       margin-bottom: 10px;
 }
+
+
+
 }
