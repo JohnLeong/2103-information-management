@@ -55,7 +55,7 @@ else {
               ['Count of centre name', 'Type of citizenship', 'Average cost'],
               ['SPR', 768.42,1548],
               ['SC', 824.42, 1534],
-              ['Others', 867.64, 1507]
+              ['Others', 867.64, 1507],
 
               <?php
 
