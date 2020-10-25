@@ -45,40 +45,57 @@ if ($conn->connect_error) {
             <!-- Banner Section  -->
 
             <!-- Display of piechart  -->
-            <div id="govt_subsidies_piechart" class="piechart_css"></div>
-            <div id="all_govt_subsidies_piechart1" class="piechart_css" ></div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div id="govt_subsidies_piechart" class="piechart_css col-md-6"></div>
+                    <div id="all_govt_subsidies_piechart1" class="piechart_css col-md-6" ></div>
+                </div>
+
+            </div>
+
             <!-- Display of piechart End -->
 
             <!-- Display of table data of centre_code that provides ALL govt subsidies  -->
-            <table>
-                <tr>
-                    <th>Centre Code</th>
-                </tr>
-
-                <?php
-                $query = "select csub.centre_code
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-3">
+                        <table class="table" >
+                            <thead>
+                                <tr>
+                                    <th scope="col">Centre Code</th>
+                                </tr>
+                            </thead>
+                            <?php
+                            $query = "select csub.centre_code
 from centre_subsidies csub where not exists (  select subsidy_category from govt_subsidies where not exists ( select csub1.centre_code from centre_subsidies csub1 where csub.centre_code = csub1.centre_code and subsidy_category = govt_subsidies.subsidy_category )) group by csub.centre_code";
-                $query1 = "select count(csub.centre_code)/12 as hello
+                            $query1 = "select count(csub.centre_code)/12 as hello
 from centre_subsidies csub where not exists (  select subsidy_category from govt_subsidies where not exists ( select csub1.centre_code from centre_subsidies csub1 where csub.centre_code = csub1.centre_code and subsidy_category = govt_subsidies.subsidy_category ))";
 
-                $result = mysqli_query($connect, $query);
-                $result1 = mysqli_query($connect, $query1);
-                if ($connect->connect_error) {
-                    $errorMsg = "Connection failed: " . $connect->connect_error;
-                    $success = false;
-                }
-                while ($row = mysqli_fetch_assoc($result)) {
-                    echo "<tr><td>" . $row["centre_code"] . "</td><td>";
-                }
-                ?>
-            </table>
-            <?php
-            while ($row = mysqli_fetch_assoc($result1)) {
-                echo "<p>" . "Count:" . $row["hello"] . "</p>";
-            }
-            ?>
-            <!-- Display of table data of centre_code that provides ALL govt subsidies End  -->
-            
+                            $result = mysqli_query($connect, $query);
+                            $result1 = mysqli_query($connect, $query1);
+                            if ($connect->connect_error) {
+                                $errorMsg = "Connection failed: " . $connect->connect_error;
+                                $success = false;
+                            }
+                            while ($row = mysqli_fetch_assoc($result)) {
+                                echo "<tbody><tr><th class='row'>" . $row["centre_code"] . "</th></tr></tbody>";
+                            }
+                            ?>
+                        </table>
+                        <?php
+                        while ($row = mysqli_fetch_assoc($result1)) {
+                            echo "<p>" . "Count:" . $row["hello"] . "</p>";
+                        }
+                        ?>
+                        <!-- Display of table data of centre_code that provides ALL govt subsidies End  -->
+                    </div>
+                    <div class="col-md-3"></div>
+                    <div class="col-md-3"></div>
+                    <div class="col-md-3"></div>
+                </div> 
+            </div>
+
+
             <!--Footer-->
             <?php
             include 'footer.inc.php';
