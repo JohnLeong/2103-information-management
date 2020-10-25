@@ -11,7 +11,7 @@ and open the template in the editor.
 
 /*visualisation page -- piechart*/
 
-#piechart{
+.piechart_css{
     width: 600px; 
     height: 500px;
 }

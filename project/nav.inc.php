@@ -20,7 +20,11 @@ if (isset($_SESSION['shopping_cart'])) {
                     <li><a href="homepage.php" title="Visit the homepage">HOME</a></li>
                     <li><a href="contact-us.php" title="Send us a message">CONTACT US</a></li>
                     <li><a href="centres.php" title="Find Centres">CENTRES</a></li>
-                    <li><a href="visualisation.php" title="Data Visualisation">VISUALISATION</a></li>
+                    <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="visualisation.php" title="Data Visualisation">VISUALISATION<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="visualisation.php" title="Statistics">SC/PR/OTHERS</a></li>
+                            <li><a href="jialin_visualisation.php" title="Statistics">Government Subsidies</a></li>
+                        </ul>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <?php

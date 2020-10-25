@@ -96,7 +96,7 @@ else {
         
        <!-- table of pie chart Section  -->
        <body>
-           <div id="piechart"></div>
+           <div class="piechart_css" id="piechart"></div>
            
            <div id ="piechart_table">
             <table>
