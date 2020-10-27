@@ -35,7 +35,7 @@
                     <li> <a class="footerLink" href="homepage.php" title="Visit out homepage"> Home</a></li>
                     <li> <a class="footerLink" href="aboutus.php" title="Read more about us"> About Us</a></li>
                     <li> <a class="footerLink" href="centres.php" title="Look for Centres"> Shop</a></li>
-                    <li> <a class="footerLink" href="conatct-us.php" title="Statistics"> Contact Us</a></li>
+                    <li> <a class="footerLink" href="conatct-us.php" title="Contact Us"> Contact Us</a></li>
                 </ul>
                 <a href="https://www.facebook.com/" class="fa fa-facebook" title="Visit our facebook page"></a>
                 <a href="https://www.instagram.com/" class="fa fa-instagram" title="Visit our instagram page"></a>
