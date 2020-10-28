@@ -5,7 +5,7 @@ require_once('../protected/config.php');
 
 <html lang="en">
     <head>
-        <title>Creole | (Home)</title>
+        <title>Creole(Home)</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="Creole | Bringing People Together Through Fashion">
@@ -43,10 +43,10 @@ require_once('../protected/config.php');
                 <!-- Wrapper for slides -->
                 <div class="carousel-inner" id="carousel1" >
                     <div class="item active">
-                        <img src="images/homepage/sale.png" class='img-responsive' id="home1" alt="Christmas Sale">                  
+                        <img src="images/homepage/childcare.jpg" class='img-responsive' id="home1" alt="Christmas Sale">                  
                     </div>
                     <div class="item">
-                        <img src="images/homepage/sale2.png" class='img-responsive' id="home2" alt="Year End Sale">                  
+                        <img src="images/homepage/childcare2.jpg" class='img-responsive' id="home2" alt="Year End Sale">                  
                     </div>
                 </div>
                 <!-- End Slider Wrap-->
@@ -70,39 +70,25 @@ require_once('../protected/config.php');
                     <div class="col-xs-12 col-sm-12  col-md-6 " id="textbrand">
                         <h1>Creole</h1>
                         <hr>
-                        <p>Uniting People Through Fashion</p>
+                        <p>Child Care Analysis at it's finest</p>
 
                     </div>
                 </div>
             </div>    
             <!--End introduction text-->   
 
-            <!--Start 2 Box of Content-->
-            <div class="container-fluid" id="secondcontent">           
-                <div class="col-sm-12" id="story">
-                    <h2>Our Vision</h2>
-                    <h3>Where Fashion Meets Culture</h3>
-                    <hr>
-                    <p>At Creole we believe that through our</p>
-                    <p>culturally inspired fashion, we can</p>
-                    <p>unite the world through bringing</p>
-                    <p>awareness of the diverse cultures that exists.</p>
-
-                </div>          
-            </div>
-            <!--End 2nd Content-->
-
+           
             <!--Shop Now-->
             <div class="container-fluid" id="shopnow">
                 <div class="col-xs-6 col-md-4 col-md-offset-2" id='season'>
-                    <h2>October Series Collections</h2>
+                    <h2>Childcare Analyzation</h2>
                     <hr>
-                    <p>Get Prepped up for Autumn with our Korean</p>
-                    <p>inspired Autumn fashion in our</p>
-                    <p>October Series Collections</p>
+                    <p>Find childcare centers that fit your needs.</p>
+                    <p>From locations right down to</p>
+                    <p>food choices.</p>
                 </div>
                 <div class="col-xs-6  col-md-3 margin-top-bot">
-                    <img  src="images/products/product-05/1.jpeg" alt="Chania" class='img-responsive' />
+                    <img  src="images/products/product-05/product.jpg" alt="Chania" class='img-responsive' />
                 </div>
             </div>
             <!-- End Shop Now -->
@@ -114,7 +100,7 @@ require_once('../protected/config.php');
                     <h3>Navigate Through Things That Might Interest You</h3>
                     <div class="container-fluid margin-top-bot" id="threebutton">
                         <div class="col-xs-6 col-xs-offset-3 col-sm-4 col-sm-offset-4 col-md-2 col-md-offset-3" id='menformal'>
-                            <a href="shop.php" class="btn btn-danger btn-lg btn-block test"  role="button">Shop</a>
+                            <a href="centres.php" class="btn btn-danger btn-lg btn-block test"  role="button">Centers</a>
                         </div>
                         <div class="col-xs-6  col-xs-offset-3 col-sm-4 col-sm-offset-4  col-md-2 col-md-offset-0" id='womenformal'>
                             <a href="aboutus.php" class="btn btn-danger btn-lg btn-block test" role="button">Our Story</a>
@@ -132,53 +118,7 @@ require_once('../protected/config.php');
             </div>
             <!-- End Quick Shop -->
 
-            <!-- Trending Products -->
-            <div class="container-fluid" id="trend">
-                <div class="row">
-                    <div class=" col-md-8 col-md-offset-2" id="trending">
-                        <h2>Trending Products</h2>
-                        <hr>
-
-
-
-
-                        <!--database connection-->
-                        <?php
-                        $servername = "161.117.122.252";
-                        $username = "p1_5";
-                        $password = "96rjYQmInJ";
-                        $dbname = "p1_5";
-                        $link = new mysqli($servername, $username, $password, $dbname);
-                        if ($link === false) {
-                            die("ERROR: Could not connect. " . mysqli_connect_error());
-                        }
-                        ?>
-                        <!--Top sells/Trending Products-->
-                        <?php
-                        $sql = "SELECT * FROM p1_5.products ORDER BY total_qt asc LIMIT 3;";
-
-
-                        if ($result = mysqli_query($link, $sql)) {
-                            if (mysqli_num_rows($result) > 0) {
-                                while ($row = mysqli_fetch_array($result)) {
-                                    $prod_id = $row['product_id'];
-                                    if ($prod_id < 10) {
-                                        $prod_id = "0" . $prod_id;
-                                    }
-                                    echo'<div class="col-xs-8 col-xs-offset-2 col-md-4 col-md-offset-0" >';
-                                    echo'<a href="product.php?id=' . $prod_id . '">';
-                                    echo'<img src="images/products/product-' . $prod_id . '/1.jpeg" alt="' . $row['product_name'] . '" class="img-responsive"></a>';
-                                    echo'<p>' . $row['product_name'] . '</p>';
-                                    echo'<p>' . $row['product_price'] . '</p>';
-                                    echo'</div>';
-                                }
-                            }
-                        }
-                        ?>         
-                    </div>
-                </div>
-            </div>
-            <!-- End Trending Products -->
+         
             <!--Footer-->
 <?php
 include 'footer.inc.php';
