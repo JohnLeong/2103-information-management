@@ -87,7 +87,7 @@ if ($connect->connect_error) {
         
        <!-- table of pie chart Section  -->
        <body>
-           <div id="piechart"></div>
+           <div id="piechart" style="width: 900px; height: 500px;"></div>
            
            <div id ="piechart_table">
             <table>
