@@ -41,7 +41,7 @@ if ($connect->connect_error) {
     </head>
     
         <script type="text/javascript">
-        <!-- illustration of pie chart Section  -->
+        <!-- illustration of bar chart Section  -->
                     google.charts.load('current', {
                 'packages': ['corechart']});
             google.charts.setOnLoadCallback(drawChart);
@@ -57,16 +57,14 @@ if ($connect->connect_error) {
                 ?>
                 ]);
 
-                var options = {
-                    title: 'Average costs of childcare centres in Singapore based on each type of citizenships'
-                };
+                var options = { legend: { position: 'top' } };
 
-                var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+                var colChartAfter = new google.visualization.ColumnChart(document.getElementById('colchart_after'));
 
-                chart.draw(data, options);
+                colChartAfter.draw(data, options);
             }
         </script> 
-        <!-- illustration of pie chart Section  -->
+        <!-- illustration of bar chart Section  -->
     
 
        <!-- Navigation  -->
@@ -85,9 +83,9 @@ if ($connect->connect_error) {
        </div>
         <!-- Banner Section  -->
         
-       <!-- table of pie chart Section  -->
+       <!-- table of bar chart Section  -->
        <body>
-           <div id="piechart" style="width: 900px; height: 500px;"></div>
+           <div id='colchart_after' style='width: 650px; height: 600px; display: inline-block'></div>
            
            <div id ="piechart_table">
             <table>
@@ -120,7 +118,7 @@ if ($connect->connect_error) {
               ?>
             </table>
            </div> 
-           <!-- Table for pie chart end  -->
+           <!-- Table for bar chart end  -->
            
            
         </body> 
@@ -139,6 +137,7 @@ if ($connect->connect_error) {
 
         
 </html>
+
 
 
 
