@@ -14,7 +14,7 @@ define("results_per_page", 10);
 <html lang="en">
 
     <head>
-        <title>Creole | (Shop)</title>
+        <title>Creole | (Centres)</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="Creole | Bringing People Together Through Fashion">
@@ -180,7 +180,7 @@ define("results_per_page", 10);
                                         }
                                         ?>>Immediate</option>
                                         <option value="Within 1 Year" <?php
-                                        if (isset($_GET['vacancy_filter']) && $_GET['child_group_filter'] === 'Within 1 Year') {
+                                        if (isset($_GET['vacancy_filter']) && $_GET['vacancy_filter'] === 'Within 1 Year') {
                                             echo("selected");
                                         }
                                         ?>>Within 1 year</option>

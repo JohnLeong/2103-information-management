@@ -34,7 +34,7 @@ if ($conn->connect_error) {
 
 <html lang="en">
     <head>
-        <title>Creole</title>
+        <title>Creole | (Centre Info)</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="Creole | Bringing People Together Through Fashion">
