@@ -44,21 +44,21 @@ if ($conn->connect_error) {
             </div>
             <!-- Banner Section  -->
 
-            <!-- Display of columnchart & linechart  -->
+            <!-- Display of bar chart & line chart  -->
             <div class="container-fluid">
                 <div class="row">
-                    <div id="town_barchart" class="piechart_css col-md-6"></div>
-                    <div id="town_linechart" class="piechart_css col-md-6" ></div>
+                    <div id="town_barchart" class="col-md-6" style="width: 750px; height:500px;"></div>
+                    <div id="town_linechart" class="col-md-6"style="width: 750px; height:500px;" ></div>
                 </div>
 
             </div>
 
-            <!-- Display of columnchart & linechart End -->
+            <!-- Display of bar chart & line chart End -->
 
             <!-- Display of table data of Town name, Frequency of Centers and Average Fees group by Town Name  -->
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <table class="table" >
                             <thead>
                                 <tr>
@@ -87,9 +87,7 @@ if ($conn->connect_error) {
                         
                         <!-- Display of table data of Town name, Frequency of Centers and Average Fees group by Town Name End  -->
                     </div>
-                    <div class="col-md-3"></div>
-                    <div class="col-md-3"></div>
-                    <div class="col-md-3"></div>
+                   
                 </div> 
             </div>
 

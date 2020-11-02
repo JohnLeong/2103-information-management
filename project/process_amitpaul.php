@@ -14,7 +14,7 @@ if ($connect->connect_error) {
             . "ORDER BY town_name;";
     $result = mysqli_query($connect, $query);
     
-    $query1 = "SELECT town_name AS 'Town', COUNT(DISTINCT(centre.centre_code)) FROM centre "
+    $query1 = "SELECT town_name, COUNT(DISTINCT(centre.centre_code)) FROM centre "
             . "JOIN hdb_town ON LEFT(centre.postal_code,2)=idhdb_town "
             . "GROUP BY town_name "
             . "ORDER BY town_name;";
@@ -23,10 +23,12 @@ if ($connect->connect_error) {
     
 }
 ?>  
+
+<!-- Bar Chart visualization-->
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script type="text/javascript">
             google.charts.load('current', {'packages': ['corechart']});
-            google.charts.setOnLoadCallback(drawChart1_lc);
+            
             google.charts.load('current', {'packages': ['bar']});
             
             google.charts.setOnLoadCallback(drawChart_bc);
@@ -51,28 +53,35 @@ while ($row = mysqli_fetch_array($result)) {
                 chart.draw(data, google.charts.Bar.convertOptions(options));
             }
 
-            function drawChart1_lc() {
-
-
-                var data = google.visualization.arrayToDataTable([
-                    ['Town', 'Number of Centers'],
-
-<?php
-while ($row = mysqli_fetch_array($result1)) {
-    echo "['" . $row["town_name"] . "', " . $row["COUNT(DISTINCT(centre.centre_code))"] . "],";
-}
-
-?>
-                ]);
-
-                var options = {
-                    title: 'Number of Centres per Town',curveType:'function', legend:{position:'top'}
-                };
-
-                var chart = new google.visualization.LineChart(document.getElementById('town_linechart'));
-
-                chart.draw(data, options);
-            }
+            
 
 
         </script>
+        
+        <!-- Line Chart Visualization-->
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Town', 'Number of Centres'],
+         <?php
+while ($row = mysqli_fetch_array($result1)) {
+    echo "['" . $row["town_name"] . "', " . $row["COUNT(DISTINCT(centre.centre_code))"] . "],";
+}
+?>
+        ]);
+
+        var options = {
+          title: 'Number of Centres per Town',
+          legend: { position: 'top' }
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('town_linechart'));
+
+        chart.draw(data, options);
+      }
+    </script>
+
