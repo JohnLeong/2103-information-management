@@ -48,18 +48,14 @@ if ($conn->connect_error) {
             <div class="container-fluid">
                 <div class="row">
                     <div id="govt_subsidies_piechart" class="piechart_css col-md-6"></div>
-                    <div id="all_govt_subsidies_piechart1" class="piechart_css col-md-6" ></div>
+
                 </div>
-
             </div>
-
-            <!-- Display of piechart End -->
-
-            <!-- Display of table data of centre_code that provides ALL govt subsidies  -->
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-md-3">
-                        <table class="table" >
+                    <div id="all_govt_subsidies_piechart1" class="piechart_css col-md-6"></div>
+                    <div class="col-md-6">
+                        <table class="table table-bordered table-responsive " >
                             <thead>
                                 <tr>
                                     <th scope="col">Centre Code</th>
@@ -87,6 +83,17 @@ from centre_subsidies csub where not exists (  select subsidy_category from govt
                             echo "<p>" . "Count:" . $row["hello"] . "</p>";
                         }
                         ?>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Display of piechart End -->
+
+            <!-- Display of table data of centre_code that provides ALL govt subsidies  -->
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-3">
+
                         <!-- Display of table data of centre_code that provides ALL govt subsidies End  -->
                     </div>
                     <div class="col-md-3"></div>
