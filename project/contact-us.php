@@ -63,7 +63,7 @@ and open the template in the editor.
                         <p class="wording">
                             <a class=" mail" title="E-mail" href="mailto:businesscreole.contact@gmail.com?Subject=ViaWebisteEmail" target="_top">
                                 <span class="glyphicon glyphicon-envelope"></span>
-                               businesscreole.contact@gmail.com
+                               chidlcare-centre-support@gmail.com
                             </a>
                         </p>
                     </div>

@@ -16,7 +16,13 @@ if ($connect->connect_error) {
                 GROUP BY type_of_citizenship
                 ORDER BY AVG(fees) ASC";
     $result = mysqli_query($connect, $query);
-
+    
+    $query1 = "SELECT COUNT(centre.centre_name) AS name, type_of_service
+                FROM centre
+                INNER JOIN centre_service ON centre.centre_code=centre_service.centre_code
+                WHERE centre.food_offered = 'na'
+                GROUP BY type_of_service";
+    $result1 = mysqli_query($connect, $query1);
 }
 ?>
     
@@ -41,7 +47,7 @@ if ($connect->connect_error) {
     </head>
     
         <script type="text/javascript">
-        <!-- illustration of bar chart Section  -->
+        <!-- illustration of bar chart 1 script  -->
                     google.charts.load('current', {
                 'packages': ['corechart']});
             google.charts.setOnLoadCallback(drawChart);
@@ -57,15 +63,43 @@ if ($connect->connect_error) {
                 ?>
                 ]);
 
-                var options = { legend: { position: 'top' } };
+                var options = { title: 'Average Fee of childcare centres based on each type of citizenship', legend: { position: 'none' } };
+
+                var colChartAfter = new google.visualization.ColumnChart(document.getElementById('colchart_after_1'));
+
+                colChartAfter.draw(data, options);
+            }
+             
+        </script> 
+        <!-- illustration of bar chart 1 script ends  -->  
+            
+        <!-- illustration of bar chart 2 script  -->
+        <script type="text/javascript">
+        
+                    google.charts.load('current', {
+                'packages': ['corechart']});
+            google.charts.setOnLoadCallback(drawChart);
+
+            function drawChart() {
+
+                var data = google.visualization.arrayToDataTable([
+                    ['Type Of Service', 'Name'],
+                <?php
+                while ($row = mysqli_fetch_array($result1)) {
+                    echo "['" . $row["type_of_service"] . "', " . $row["name"] . "],";
+                }
+                ?>
+                ]);
+
+                var options = { title: 'Count the number of centre that does not offer food based on each type of service(Full Day, Half Day etc)', legend: { position: 'none' } };
 
                 var colChartAfter = new google.visualization.ColumnChart(document.getElementById('colchart_after'));
 
                 colChartAfter.draw(data, options);
             }
-        </script> 
-        <!-- illustration of bar chart Section  -->
-    
+               
+        </script>
+        <!-- illustration of bar chart 2 script ends  -->  
 
        <!-- Navigation  -->
        <?php
@@ -83,42 +117,98 @@ if ($connect->connect_error) {
        </div>
         <!-- Banner Section  -->
         
-       <!-- table of bar chart Section  -->
+       
        <body>
-           <div id='colchart_after' style='width: 650px; height: 600px; display: inline-block'></div>
+           <div class="container">
+               <div class="row">
+                   <div class ="col-lg-6">
+                       <!-- Illustration of bar chart 1  -->
+                        <div id='colchart_after_1' style='width: 650px; height: 600px; display: inline-block'></div>
+                        
+                        <!-- table of bar chart 1 Section  -->
+                        <div id ="piechart_table">
+                            <h4>Average Fee of childcare center parents have to pay based on each type of citizenship (Singaporean, PR, Others)</h4>
+                            <table>
+                               <tr>
+                                   <th>types of citizenship</th>
+                                   <th>Average cost</th>
+                               </tr>
+
+                               <?php
+                               require_once('../protected/config.php');
+                                $conn = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+                                $sql = "SELECT type_of_citizenship, AVG(fees)
+                                FROM centre_service
+                                WHERE fees IN (SELECT fees FROM centre_service)
+                                GROUP BY type_of_citizenship
+                                ORDER BY AVG(fees) ASC;"; 
+
+                                $fire = mysqli_query($conn, $sql);
+
+                                if ($conn->connect_error) {
+                                    $errorMsg = "Connection failed: " . $conn->connect_error;
+                                    $success = false;
+                                }
+                               while ($result = mysqli_fetch_assoc($fire)){
+                                echo "<tr><td>".$result["type_of_citizenship"]."</td><td>".$result["AVG(fees)"]."</td></tr>";
+
+                                }
+                                echo "</table>";
+                              ?>
+                            </table>
+                            <!-- table of bar chart 1 Section ends -->
+                        </div> 
+                        
            
-           <div id ="piechart_table">
-            <table>
-               <tr>
+                   </div>
                    
-                   <th>types of citizenship</th>
-                   <th>Average cost</th>
-               </tr>
+                   <div class ="col-lg-6">
+                       <!-- Illustration of of bar chart 2 Section  -->
+                       <div id='colchart_after' style='width: 650px; height: 600px; display: inline-block'></div>
+                       
+                            <!-- table of bar chart 2 Section  -->
+                            <div id ="piechart_table">
+                                <h4>Name of childcare center that does not offer food for the child according to the type of service (full day services, half day services etc)</h4>
+                                <table>
+                                   <tr>
+                                       <th>Name of Centers </th>
+                                       <th>Type of Services</th>
+                                   </tr>
 
-               <?php
-               require_once('../protected/config.php');
-                $conn = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
-                $sql = "SELECT type_of_citizenship, AVG(fees)
-                FROM centre_service
-                WHERE fees IN (SELECT fees FROM centre_service)
-                GROUP BY type_of_citizenship
-                ORDER BY AVG(fees) ASC;"; 
+                                   <?php
+                                   require_once('../protected/config.php');
+                                    $conn = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+                                    $sql = "SELECT DISTINCT centre.centre_name AS name, type_of_service
+                                            FROM centre
+                                            INNER JOIN centre_service ON centre.centre_code=centre_service.centre_code
+                                            WHERE centre.food_offered = 'na'
+                                            ORDER BY type_of_service;"; 
 
-                $fire = mysqli_query($conn, $sql);
+                                    $fire = mysqli_query($conn, $sql);
 
-                if ($conn->connect_error) {
-                    $errorMsg = "Connection failed: " . $conn->connect_error;
-                    $success = false;
-                }
-               while ($result = mysqli_fetch_assoc($fire)){
-                echo "<tr><td>".$result["type_of_citizenship"]."</td><td>".$result["AVG(fees)"]."</td></tr>";
+                                    if ($conn->connect_error) {
+                                        $errorMsg = "Connection failed: " . $conn->connect_error;
+                                        $success = false;
+                                    }
+                                   while ($result = mysqli_fetch_assoc($fire)){
+                                    echo "<tr><td>".$result["name"]."</td><td>".$result["type_of_service"]."</td></tr>";
 
-                }
-                echo "</table>";
-              ?>
-            </table>
-           </div> 
-           <!-- Table for bar chart end  -->
+                                    }
+                                    echo "</table>";
+                                  ?>
+                                </table>
+                                <!-- table of bar chart 2 Section ends -->
+                        </div> 
+                       
+                   </div>
+                   
+                </div>
+           </div>
+                   
+           
+           
+           
+           
            
            
         </body> 
