@@ -150,7 +150,7 @@ if ($connect->connect_error) {
                                     $success = false;
                                 }
                                while ($result = mysqli_fetch_assoc($fire)){
-                                echo "<tr><td>".$result["type_of_citizenship"]."</td><td>".$result["AVG(fees)"]."</td></tr>";
+                                echo "<tr><td>".$result["type_of_citizenship"]."</td><td>$".$result["AVG(fees)"]."</td></tr>";
 
                                 }
                                 echo "</table>";

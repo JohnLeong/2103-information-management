@@ -80,7 +80,7 @@ if ($conn->connect_error) {
                                 $success = false;
                             }
                             while ($row = mysqli_fetch_assoc($result)) {
-                                echo "<tbody><tr><td class='row'>" . $row["town_name"] . "</td><td class='row'>".$row["COUNT(DISTINCT(centre.centre_code))"]."</td><td class'row'>".$row["ROUND(AVG(centre_service.fees),2)"]."</td></tr></tbody>";
+                                echo "<tbody><tr><td class='row'>" . $row["town_name"] . "</td><td class='row'>".$row["COUNT(DISTINCT(centre.centre_code))"]."</td><td class'row'>$".$row["ROUND(AVG(centre_service.fees),2)"]."</td></tr></tbody>";
                             }
                             ?>
                         </table>
