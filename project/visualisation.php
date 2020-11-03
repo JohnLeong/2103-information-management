@@ -45,7 +45,7 @@ if ($connect->connect_error) {
 
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     </head>
-    
+        
         <script type="text/javascript">
         <!-- illustration of bar chart 1 script  -->
                     google.charts.load('current', {
@@ -100,7 +100,8 @@ if ($connect->connect_error) {
                
         </script>
         <!-- illustration of bar chart 2 script ends  -->  
-
+        
+        
        <!-- Navigation  -->
        <?php
        include 'nav.inc.php';
@@ -169,7 +170,7 @@ if ($connect->connect_error) {
                             <!-- table of bar chart 2 Section  -->
                             <div id ="piechart_table">
                                 <h4>Name of childcare center that does not offer food for the child according to the type of service (full day services, half day services etc)</h4>
-                                <table>
+                                <table id="example" class="display">
                                    <tr>
                                        <th>Name of Centers </th>
                                        <th>Type of Services</th>
@@ -191,42 +192,29 @@ if ($connect->connect_error) {
                                         $success = false;
                                     }
                                    while ($result = mysqli_fetch_assoc($fire)){
-                                    echo "<tr><td>".$result["name"]."</td><td>".$result["type_of_service"]."</td></tr>";
+                                       
+                                        echo "<tr><td>".$result["name"]."</td><td>".$result["type_of_service"]."</td></tr>";
 
                                     }
                                     echo "</table>";
                                   ?>
-                                </table>
+                                </table>        
                                 <!-- table of bar chart 2 Section ends -->
-                        </div> 
-                       
+                            </div>  
                    </div>
-                   
-                </div>
-           </div>
-                   
-           
-           
-           
-           
-           
-           
-        </body> 
-        
-        
-    <!-- Footer  -->
-    <?php
-         include 'footer.inc.php';
-     ?>
-    <!-- Footer  -->
-        
-       
-
-            
-            
-
-        
+               </div>  
+           </div>       
+       </body>
 </html>
+
+
+
+                       
+           
+          
+
+
+
 
 
 

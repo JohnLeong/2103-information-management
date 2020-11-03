@@ -45,7 +45,6 @@
                 <p class="footer-margin" id="copyright" >Copyright &copy; 2019 Creole </p>
 
             </div>
-
         </div>
     </div>
 </footer>
