@@ -47,16 +47,16 @@ if ($conn->connect_error) {
             <!-- Display of piechartand table data  -->
             <div class="container-fluid margin-align">
                 <div class="row">
-                    <div class="col-md-2 col-lg-2"></div>
-                    <div id="govt_subsidies_piechart" class="piechart_css col-md-8 col-lg-8"></div>
-                     <div class="col-md-2 col-lg-2"></div>
+                    <div class="col-md-2"></div>
+                    <div id="govt_subsidies_piechart" class="piechart_css col-md-8"></div>
+                     <div class="col-md-2"></div>
                 </div>
             </div>
             <div class="container-fluid margin-align">
                 <div class="row">
-                    <div class="col-md-2 col-lg-2"></div>
-                    <div id="all_govt_subsidies_piechart1" class="piechart_css col-md-4 col-lg-4"></div>
-                    <div class="col-md-4 col-lg-4 table-wrapper-scroll-y my-custom-scrollbar">
+                    <div class="col-md-2"></div>
+                    <div id="all_govt_subsidies_piechart1" class="piechart_css col-md-6"></div>
+                    <div class="col-md-2 table-wrapper-scroll-y my-custom-scrollbar">
                         <div class=" table-wrapper-scroll-y my-custom-scrollbar">
                             <table class="table table-bordered table-striped mb-0" >
                                 <thead>
@@ -105,7 +105,7 @@ if ($conn->connect_error) {
 //                            ?> 
                         </div>
                     </div>
-                    <div class="col-md-2 col-lg-2"></div>
+                    <div class="col-md-2 "></div>
                 </div>
             </div>
                 <!-- Display of piechart and table data End -->
