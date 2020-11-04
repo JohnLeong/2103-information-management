@@ -102,7 +102,7 @@ while ($row = mysqli_fetch_array($result1)) {
         ]);
 
         var options = {
-          title: 'Number of Centres per Town', legend:{position:'right'}
+          title: 'Number of Centres per Town', legend:{position:'right'}, is3D:true
         };
 
         var chart = new google.visualization.PieChart(document.getElementById('town_linechart'));
