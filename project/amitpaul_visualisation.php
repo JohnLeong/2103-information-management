@@ -63,7 +63,7 @@ if ($conn->connect_error) {
                             <thead>
                                 <tr>
                                     <th>Town</th>
-                                    <th>Frequency of Centers</th>
+                                    <th>Number of Centers</th>
                                     <th>Average Fees</th>
                                 </tr>
                             </thead>

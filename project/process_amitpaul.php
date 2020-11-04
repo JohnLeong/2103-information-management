@@ -58,7 +58,7 @@ while ($row = mysqli_fetch_array($result)) {
 
         </script>
         
-        <!-- Line Chart Visualization-->
+        <!-- Line Chart Visualization
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
       google.charts.load('current', {'packages':['corechart']});
@@ -84,4 +84,29 @@ while ($row = mysqli_fetch_array($result1)) {
         chart.draw(data, options);
       }
     </script>
+-->
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
 
+      function drawChart() {
+
+        var data = google.visualization.arrayToDataTable([
+          ['Town', 'Number of Centres'],
+         <?php
+while ($row = mysqli_fetch_array($result1)) {
+    echo "['" . $row["town_name"] . "', " . $row["COUNT(DISTINCT(centre.centre_code))"] . "],";
+}
+?>
+        ]);
+
+        var options = {
+          title: 'Number of Centres per Town', legend:{position:'right'}
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('town_linechart'));
+
+        chart.draw(data, options);
+      }
+    </script>
