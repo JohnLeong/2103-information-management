@@ -14,7 +14,7 @@ if ($connect->connect_error) {
             . "ORDER BY town_name;";
     $result = mysqli_query($connect, $query);
     
-    $query1 = "SELECT town_name, COUNT(DISTINCT(centre.centre_code)) FROM centre "
+    $query1 = "SELECT town_name, COUNT(DISTINCT(centre.centre_code)) as count_centre_code FROM centre "
             . "JOIN hdb_town ON LEFT(centre.postal_code,2)=idhdb_town "
             . "GROUP BY town_name "
             . "ORDER BY town_name;";
@@ -68,9 +68,9 @@ while ($row = mysqli_fetch_array($result)) {
         var data = google.visualization.arrayToDataTable([
           ['Town', 'Number of Centres'],
          <?php
-while ($row = mysqli_fetch_array($result1)) {
-    echo "['" . $row["town_name"] . "', " . $row["COUNT(DISTINCT(centre.centre_code))"] . "],";
-}
+//while ($row = mysqli_fetch_array($result1)) {
+//    echo "['" . $row["town_name"] . "', " . $row["COUNT(DISTINCT(centre.centre_code))"] . "],";
+//}
 ?>
         ]);
 
@@ -96,7 +96,7 @@ while ($row = mysqli_fetch_array($result1)) {
           ['Town', 'Number of Centres'],
          <?php
 while ($row = mysqli_fetch_array($result1)) {
-    echo "['" . $row["town_name"] . "', " . $row["COUNT(DISTINCT(centre.centre_code))"] . "],";
+    echo "['" . $row["town_name"] . "', " . $row["count_centre_code"] . "],";
 }
 ?>
         ]);

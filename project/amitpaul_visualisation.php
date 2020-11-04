@@ -48,7 +48,7 @@ if ($conn->connect_error) {
             <div class="container-fluid">
                 <div class="row">
                     <div id="town_barchart" class="col-md-6" style="width: 750px; height:500px;"></div>
-                    <div id="town_linechart" class="col-md-6"style="width: 750px; height:500px;" ></div>
+                    <div id="town_linechart" class="col-md-6" style="width: 750px; height:500px;" ></div>
                 </div>
 
             </div>
