@@ -27,26 +27,6 @@ if (isset($_SESSION['shopping_cart'])) {
                             <li><a href="amitpaul_visualisation.php" title="Statistics">Average Fees & Number of Centers based on Town</a></li>
                         </ul>
                 </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <?php
-                    if (!isset($_SESSION['user_id'])) {
-                        ?>
-                        <li><a href="login.php" title="Login to an existing account"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-                    <?php } else { ?>
-                        <li><a href="logout.php" title="Logout of your account"><span class="glyphicon glyphicon-log-in"></span>
-                                Logout</a></li>
-                        <li><a href="profile.php" title="Visit your profile page"><span class="glyphicon glyphicon-user"></span>
-                                Profile</a></li>
-                    <?php } ?>
-                    <li><a href="cart.php" title="View your shopping cart"><span class="glyphicon glyphicon-shopping-cart"></span>Cart
-                            <span class="badge badge-pill progress-bar-danger "><?php
-                                if ($count > 0) {
-                                    echo $count;
-                                }
-                                ?></span></a></li>
-
-                </ul>
-
             </div>
         </div>
     </nav>
