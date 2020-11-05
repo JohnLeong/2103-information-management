@@ -27,7 +27,21 @@ if ($conn->connect_error) {
     $service_results = $conn->query($service_sql);
     if ($service_results->num_rows < 1) {
         $errorMsg = "No centre service with code '$centre_code' found in the databse.";
-        $success = false;
+        //$success = false;
+    }
+
+    $incidental_sql = "SELECT * FROM sql1902691tlx.incidental_charge WHERE centre_code = '$centre_code'";
+    $incidental_results = $conn->query($incidental_sql);
+    if ($incidental_results->num_rows < 1) {
+        $errorMsg = "No centre service with code '$centre_code' found in the databse.";
+        //$success = false;
+    }
+
+    $subsidies_sql = "SELECT * FROM sql1902691tlx.govt_subsidies AS s, sql1902691tlx.centre_subsidies AS cs WHERE cs.centre_code='$centre_code' AND cs.subsidy_category=s.subsidy_category";
+    $subsidy_results = $conn->query($subsidies_sql);
+    if ($subsidy_results->num_rows < 1) {
+        $errorMsg = "No centre service with code '$centre_code' found in the databse.";
+        //$success = false;
     }
 }
 ?>
@@ -121,58 +135,139 @@ if ($conn->connect_error) {
             <!-- Services section-->
             <section>
                 <div class='row'>
-                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-8 col-sm-offset-2">
-                    <h4>Centre services</h4>
-                    <table style="margin: 0px; width:100%;">
-                        <tbody>
-                            <tr>
-                                <th class="centre_info_cell">
-                                    <p>Class of license</p>
-                                </th>
-                                <th class="centre_info_cell">
-                                    <p>Type of service</p>
-                                </th>
-                                <th class="centre_info_cell">
-                                    <p>Levels offered</p>
-                                </th>
-                                <th class="centre_info_cell">
-                                    <p>Fees</p>
-                                </th>
-                                <th class="centre_info_cell">
-                                    <p>Type of citizenship</p>
-                                </th>
-                            </tr>
+                    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-8 col-sm-offset-2">
+                        <h4>Centre services</h4>
+                        <table style="margin: 0px; width:100%;">
+                            <tbody>
+                                <tr>
+                                    <th class="centre_info_cell">
+                                        <p>Class of license</p>
+                                    </th>
+                                    <th class="centre_info_cell">
+                                        <p>Type of service</p>
+                                    </th>
+                                    <th class="centre_info_cell">
+                                        <p>Levels offered</p>
+                                    </th>
+                                    <th class="centre_info_cell">
+                                        <p>Fees</p>
+                                    </th>
+                                    <th class="centre_info_cell">
+                                        <p>Type of citizenship</p>
+                                    </th>
+                                </tr>
 
-                            <?php
-                            if (mysqli_num_rows($service_results) > 0) {
-                                while ($service_row = mysqli_fetch_array($service_results)) {
-                                    echo '<tr>';
-                                    echo '<td class="centre_info_cell">';
-                                    echo '<p>' . $service_row["class_of_licence"] . '</p>';
-                                    echo '</td>';
-                                    echo '<td class="centre_info_cell">';
-                                    echo '<p>' . $service_row["type_of_service"] . '</p>';
-                                    echo '</td>';
-                                    echo '<td class="centre_info_cell">';
-                                    echo '<p>' . $service_row["levels_offered"] . '</p>';
-                                    echo '</td>';
-                                    echo '<td class="centre_info_cell">';
-                                    echo '<p>' . $service_row["fees"] . '</p>';
-                                    echo '</td>';
-                                    echo '<td class="centre_info_cell">';
-                                    echo '<p>' . $service_row["type_of_citizenship"] . '</p>';
-                                    echo '</td>';
-                                    echo '</tr>';
+                                <?php
+                                if (mysqli_num_rows($service_results) > 0) {
+                                    while ($service_row = mysqli_fetch_array($service_results)) {
+                                        echo '<tr>';
+                                        echo '<td class="centre_info_cell">';
+                                        echo '<p>' . $service_row["class_of_licence"] . '</p>';
+                                        echo '</td>';
+                                        echo '<td class="centre_info_cell">';
+                                        echo '<p>' . $service_row["type_of_service"] . '</p>';
+                                        echo '</td>';
+                                        echo '<td class="centre_info_cell">';
+                                        echo '<p>' . $service_row["levels_offered"] . '</p>';
+                                        echo '</td>';
+                                        echo '<td class="centre_info_cell">';
+                                        echo '<p>' . $service_row["fees"] . '</p>';
+                                        echo '</td>';
+                                        echo '<td class="centre_info_cell">';
+                                        echo '<p>' . $service_row["type_of_citizenship"] . '</p>';
+                                        echo '</td>';
+                                        echo '</tr>';
+                                    }
                                 }
-                            }
-                            ?>
+                                ?>
 
-                        </tbody>
-                    </table>
-                </div>  
+                            </tbody>
+                        </table>
+                    </div>  
                 </div>
             </section>
+            <br/>
 
+            <!-- Incidental charges section-->
+            <section>
+                <div class='row'>
+                    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-8 col-sm-offset-2">
+                        <h4>Incidental charges</h4>
+                        <table style="margin: 0px; width:100%;">
+                            <tbody>
+                                <tr>
+                                    <th class="centre_info_cell">
+                                        <p>Incidental charge</p>
+                                    </th>
+                                    <th class="centre_info_cell">
+                                        <p>Frequency</p>
+                                    </th>
+                                    <th class="centre_info_cell">
+                                        <p>Cost</p>
+                                    </th>
+                                </tr>
+
+                                <?php
+                                if (mysqli_num_rows($incidental_results) > 0) {
+                                    while ($incidental_row = mysqli_fetch_array($incidental_results)) {
+                                        echo '<tr>';
+                                        echo '<td class="centre_info_cell">';
+                                        echo '<p>' . $incidental_row["incidental_charges"] . '</p>';
+                                        echo '</td>';
+                                        echo '<td class="centre_info_cell">';
+                                        echo '<p>' . $incidental_row["frequency"] . '</p>';
+                                        echo '</td>';
+                                        echo '<td class="centre_info_cell">';
+                                        echo '<p>' . $incidental_row["amount"] . '</p>';
+                                        echo '</td>';
+                                        echo '</tr>';
+                                    }
+                                }
+                                ?>
+
+                            </tbody>
+                        </table>
+                    </div>  
+                </div>
+            </section>
+           <br/>
+
+            <!-- Subsidies section-->
+            <section>
+                <div class='row'>
+                    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-8 col-sm-offset-2">
+                        <h4>Available subsidies</h4>
+                        <table style="margin: 0px; width:100%;">
+                            <tbody>
+                                <tr>
+                                    <th class="centre_info_cell">
+                                        <p>Subsidy category</p>
+                                    </th>
+                                    <th class="centre_info_cell">
+                                        <p>Service type</p>
+                                    </th>
+                                </tr>
+
+                                <?php
+                                if (mysqli_num_rows($incidental_results) > 0) {
+                                    while ($incidental_row = mysqli_fetch_array($incidental_results)) {
+                                        echo '<tr>';
+                                        echo '<td class="centre_info_cell">';
+                                        echo '<p>' . $incidental_row["subsidy_category"] . '</p>';
+                                        echo '</td>';
+                                        echo '<td class="centre_info_cell">';
+                                        echo '<p>' . $incidental_row["service_type"] . '</p>';
+                                        echo '</td>';
+                                        echo '</tr>';
+                                    }
+                                }
+                                ?>
+
+                            </tbody>
+                        </table>
+                    </div>  
+                </div>
+            </section>
 
             <!-- Back to store button --> 
             <section>   
@@ -187,6 +282,7 @@ if ($conn->connect_error) {
         if ($success) {
             $result->free_result();
             $service_results->free_result();
+            $incidental_results->free_result();
             $conn->close();
         }
         ?>

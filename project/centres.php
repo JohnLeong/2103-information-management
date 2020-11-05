@@ -307,7 +307,9 @@ define("results_per_page", 10);
                                     //End of query
                                     //$sql .= " LIMIT " . results_per_page;
 
-                                    $count_sql = "SELECT COUNT(*) FROM sql1902691tlx.centre WHERE TRUE" . $sql;
+                                    //$count_sql = "SELECT COUNT(*) FROM sql1902691tlx.centre WHERE TRUE" . $sql;
+                                    $count_sql = "SELECT COUNT(*) FROM sql1902691tlx.centre AS c LEFT OUTER JOIN (SELECT cs.centre_code, AVG(cs.fees) as avg_fees FROM sql1902691tlx.centre_service AS cs GROUP BY cs.centre_code) AS cs2 ON c.centre_code=cs2.centre_code WHERE avg_fees IS NOT NULL" . $sql . " ORDER BY avg_fees";
+                                     
 
                                     $num_results = 0;
 
@@ -321,8 +323,9 @@ define("results_per_page", 10);
                                     $page = isset($_GET['page']) ? $_GET['page'] : 1;
 
                                     $start_page = ($page - 1) * results_per_page;
-                                    $actual_sql = "SELECT * FROM sql1902691tlx.centre WHERE TRUE" . $sql . " LIMIT " . $start_page . "," . results_per_page;
-
+                                    //$actual_sql = "SELECT * FROM sql1902691tlx.centre WHERE TRUE" . $sql . " LIMIT " . $start_page . "," . results_per_page;
+                                    $actual_sql = "SELECT * FROM sql1902691tlx.centre AS c LEFT OUTER JOIN (SELECT cs.centre_code, AVG(cs.fees) as avg_fees FROM sql1902691tlx.centre_service AS cs GROUP BY cs.centre_code) AS cs2 ON c.centre_code=cs2.centre_code WHERE avg_fees IS NOT NULL" . $sql . " ORDER BY avg_fees LIMIT " . $start_page . "," . results_per_page;
+                                     
                                     //Execute actual query to get data
                                     if ($result = mysqli_query($conn, $actual_sql)) {
                                         if (mysqli_num_rows($result) > 0) {
@@ -349,7 +352,7 @@ define("results_per_page", 10);
                                                 echo'<p class="card-text">Centre code: ' . $row["centre_code"] . '</p>';
                                                 echo'<p class="card-text">Contact no.: ' . $row["centre_contact_no"] . '</p>';
                                                 echo'<p class="card-text">Email address: ' . $row["centre_email_address"] . '</p>';
-
+                                                echo'<p class="card-text">Average service fees: $' . number_format(floatval($row["avg_fees"]), 2) . '</p>';
 
                                                 echo'</div>';
 
