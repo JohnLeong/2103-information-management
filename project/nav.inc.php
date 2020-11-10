@@ -24,7 +24,7 @@ if (isset($_SESSION['shopping_cart'])) {
                         <ul class="dropdown-menu">
                             <li><a href="visualisation.php" title="Statistics">SC/PR/OTHERS</a></li>
                             <li><a href="govt_subsidies_visualisation.php" title="Statistics">Government Subsidies</a></li>
-                            <li><a href="amitpaul_visualisation.php" title="Statistics">Average Fees & Number of Centers based on Town</a></li>
+                            <li><a href="town_visualisation.php" title="Statistics">Average Fees & Number of Centers based on Town</a></li>
                         </ul>
                 </ul>
             </div>
