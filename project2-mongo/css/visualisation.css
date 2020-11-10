@@ -1,0 +1,52 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 24 Oct 2020, 11:26:47 pm
+    Author     : Teo Li Xien
+*/
+
+
+/*visualisation page -- piechart*/
+
+.piechart_css{
+    width: 800px; 
+    height: 500px;
+}
+
+#piechart_table{
+    width:400px;
+    text-align: center;
+    border-collapse: collapse;
+    display:block;
+}
+
+#piechart_table td, #piechart_table th {
+  border: 1px solid #000000;
+  padding: 8px;
+  background: white;
+}
+
+#piechart_table th{
+    background-color: #cdcdcd;
+    color:black;
+    border: 1px solid #000000;
+    text-align: center;      
+}
+
+/*display table data vertical scroll */
+.my-custom-scrollbar {
+position: relative;
+height: 500px;
+overflow: auto;
+}
+.table-wrapper-scroll-y {
+display: visible;
+}
+
+
+.margin-align{
+    margin-bottom: 50px;
+}
