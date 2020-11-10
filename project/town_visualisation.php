@@ -21,7 +21,7 @@ if ($conn->connect_error) {
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <?php
-        include 'process_amitpaul.php';
+        include 'process_town.php';
         ?>
 
     </head>
