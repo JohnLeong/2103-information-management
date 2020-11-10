@@ -23,7 +23,7 @@ if (isset($_SESSION['shopping_cart'])) {
                     <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="visualisation.php" title="Data Visualisation">VISUALISATION<span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="visualisation.php" title="Statistics">SC/PR/OTHERS</a></li>
-                            <li><a href="jialin_visualisation.php" title="Statistics">Government Subsidies</a></li>
+                            <li><a href="govt_subsidies_visualisation.php" title="Statistics">Government Subsidies</a></li>
                             <li><a href="amitpaul_visualisation.php" title="Statistics">Average Fees & Number of Centers based on Town</a></li>
                         </ul>
                 </ul>
