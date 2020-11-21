@@ -1,49 +1,15 @@
 <!DOCTYPE html>
 <?php
-require_once('../protected/config.php');
-
-// Get product information from database
-$product_table = "products";
+require 'vendor/autoload.php';
+require_once('../protected/configmdb.php');
 
 $errorMsg = "";
 $success = true;
 $centre_code = isset($_GET['centre_code']) ? $_GET['centre_code'] : '';
 
-$conn = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+$centre_collection = $mongo->alfredng_db->centre;
 
-if ($conn->connect_error) {
-    $errorMsg = "Connection failed: " . $conn->connect_error;
-    $success = false;
-} else {
-    $sql = "SELECT * FROM sql1902691tlx.centre WHERE centre_code = '$centre_code'";
-    $result = $conn->query($sql);
-    if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-    } else {
-        $errorMsg = "No centre with code '$centre_code' found in the databse.";
-        $success = false;
-    }
-    $service_sql = "SELECT * FROM sql1902691tlx.centre_service WHERE centre_code = '$centre_code'";
-    $service_results = $conn->query($service_sql);
-    if ($service_results->num_rows < 1) {
-        $errorMsg = "No centre service with code '$centre_code' found in the databse.";
-        //$success = false;
-    }
-
-    $incidental_sql = "SELECT * FROM sql1902691tlx.incidental_charge WHERE centre_code = '$centre_code'";
-    $incidental_results = $conn->query($incidental_sql);
-    if ($incidental_results->num_rows < 1) {
-        $errorMsg = "No centre service with code '$centre_code' found in the databse.";
-        //$success = false;
-    }
-
-    $subsidies_sql = "SELECT * FROM sql1902691tlx.govt_subsidies AS s, sql1902691tlx.centre_subsidies AS cs WHERE cs.centre_code='$centre_code' AND cs.subsidy_category=s.subsidy_category";
-    $subsidy_results = $conn->query($subsidies_sql);
-    if ($subsidy_results->num_rows < 1) {
-        $errorMsg = "No centre service with code '$centre_code' found in the databse.";
-        //$success = false;
-    }
-}
+$centre_result = $centre_collection->findOne(['centre_code' => $centre_code,]);
 ?>
 
 <html lang="en">
@@ -78,26 +44,26 @@ if ($conn->connect_error) {
 
                 <!--  Centre information --> 
                 <div class="col-lg-4 col-lg-offset-0 col-md-5 col-md-offset-0 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
-                    <h2 id="product-name"><?php echo $row["centre_name"] ?></h2>
-                    <p><?php echo $row["centre_address"] ?></p>
+                    <h2 id="product-name"><?php echo $centre_result["centre_name"] ?></h2>
+                    <p><?php echo $centre_result["centre_address"] ?></p>
 
                     <hr>
 
 
                     <h4>Centre code</h4>
-                    <p><?php echo $row["centre_code"] ?></p>
+                    <p><?php echo $centre_result["centre_code"] ?></p>
 
                     <h4>Contact no.</h4>
-                    <p><?php echo $row["centre_contact_no"] ?></p>
+                    <p><?php echo $centre_result["centre_contact_no"] ?></p>
 
                     <h4>Email address</h4>
-                    <p><?php echo $row["centre_email_address"] ?></p>
+                    <p><?php echo $centre_result["centre_email_address"] ?></p>
 
                     <h4>Food offered</h4>
-                    <p><?php echo $row["food_offered"] ?></p>
+                    <p><?php echo $centre_result["food_offered"] ?></p>
 
                     <h4>Second languages</h4>
-                    <p><?php echo $row["second_languages_offered"] ?></p>
+                    <p><?php echo $centre_result["second_languages_offered"] ?></p>
 
                     <table style="margin: 0px; width:100%;">
                         <tbody>
@@ -106,24 +72,24 @@ if ($conn->connect_error) {
                             </tr>
                             <tr>
                                 <td class="centre_info_cell">
-                                    <p>Infant: <?php echo $row["infant_vacancy"] ?></p>
+                                    <p>Infant: <?php echo $centre_result["infant_vacancy"] ?></p>
                                 </td>
                                 <td class="centre_info_cell">
-                                    <p>PG: <?php echo $row["pg_vacancy"] ?></p>
+                                    <p>PG: <?php echo $centre_result["pg_vacancy"] ?></p>
                                 </td>
                                 <td class="centre_info_cell">
-                                    <p>Nursery 1: <?php echo $row["n1_vacancy"] ?></p>
+                                    <p>Nursery 1: <?php echo $centre_result["n1_vacancy"] ?></p>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="centre_info_cell">
-                                    <p>Nursery 2: <?php echo $row["n2_vacancy"] ?></p>
+                                    <p>Nursery 2: <?php echo $centre_result["n2_vacancy"] ?></p>
                                 </td>
                                 <td class="centre_info_cell">
-                                    <p>Kindergarten 1: <?php echo $row["k1_vacancy"] ?></p>
+                                    <p>Kindergarten 1: <?php echo $centre_result["k1_vacancy"] ?></p>
                                 </td>
                                 <td class="centre_info_cell">
-                                    <p>Kindergarten 2: <?php echo $row["k2_vacancy"] ?></p>
+                                    <p>Kindergarten 2: <?php echo $centre_result["k2_vacancy"] ?></p>
                                 </td>
                             </tr>
                         </tbody>
@@ -158,29 +124,26 @@ if ($conn->connect_error) {
                                 </tr>
 
                                 <?php
-                                if (mysqli_num_rows($service_results) > 0) {
-                                    while ($service_row = mysqli_fetch_array($service_results)) {
-                                        echo '<tr>';
-                                        echo '<td class="centre_info_cell">';
-                                        echo '<p>' . $service_row["class_of_licence"] . '</p>';
-                                        echo '</td>';
-                                        echo '<td class="centre_info_cell">';
-                                        echo '<p>' . $service_row["type_of_service"] . '</p>';
-                                        echo '</td>';
-                                        echo '<td class="centre_info_cell">';
-                                        echo '<p>' . $service_row["levels_offered"] . '</p>';
-                                        echo '</td>';
-                                        echo '<td class="centre_info_cell">';
-                                        echo '<p>' . $service_row["fees"] . '</p>';
-                                        echo '</td>';
-                                        echo '<td class="centre_info_cell">';
-                                        echo '<p>' . $service_row["type_of_citizenship"] . '</p>';
-                                        echo '</td>';
-                                        echo '</tr>';
-                                    }
+                                foreach ($centre_result["centre_service"] as $entry) {
+                                    echo '<tr>';
+                                    echo '<td class="centre_info_cell">';
+                                    echo '<p>' . $entry["class_of_licence"] . '</p>';
+                                    echo '</td>';
+                                    echo '<td class="centre_info_cell">';
+                                    echo '<p>' . $entry["type_of_service"] . '</p>';
+                                    echo '</td>';
+                                    echo '<td class="centre_info_cell">';
+                                    echo '<p>' . $entry["levels_offered"] . '</p>';
+                                    echo '</td>';
+                                    echo '<td class="centre_info_cell">';
+                                    echo '<p>' . $entry["fees"] . '</p>';
+                                    echo '</td>';
+                                    echo '<td class="centre_info_cell">';
+                                    echo '<p>' . $entry["type_of_citizenship"] . '</p>';
+                                    echo '</td>';
+                                    echo '</tr>';
                                 }
                                 ?>
-
                             </tbody>
                         </table>
                     </div>  
@@ -208,20 +171,18 @@ if ($conn->connect_error) {
                                 </tr>
 
                                 <?php
-                                if (mysqli_num_rows($incidental_results) > 0) {
-                                    while ($incidental_row = mysqli_fetch_array($incidental_results)) {
-                                        echo '<tr>';
-                                        echo '<td class="centre_info_cell">';
-                                        echo '<p>' . $incidental_row["incidental_charges"] . '</p>';
-                                        echo '</td>';
-                                        echo '<td class="centre_info_cell">';
-                                        echo '<p>' . $incidental_row["frequency"] . '</p>';
-                                        echo '</td>';
-                                        echo '<td class="centre_info_cell">';
-                                        echo '<p>' . $incidental_row["amount"] . '</p>';
-                                        echo '</td>';
-                                        echo '</tr>';
-                                    }
+                                foreach ($centre_result["incidental_charges"] as $entry) {
+                                    echo '<tr>';
+                                    echo '<td class="centre_info_cell">';
+                                    echo '<p>' . $entry["incidental_charges"] . '</p>';
+                                    echo '</td>';
+                                    echo '<td class="centre_info_cell">';
+                                    echo '<p>' . $entry["frequency"] . '</p>';
+                                    echo '</td>';
+                                    echo '<td class="centre_info_cell">';
+                                    echo '<p>' . $entry["amount"] . '</p>';
+                                    echo '</td>';
+                                    echo '</tr>';
                                 }
                                 ?>
 
@@ -249,17 +210,15 @@ if ($conn->connect_error) {
                                 </tr>
 
                                 <?php
-                                if (mysqli_num_rows($incidental_results) > 0) {
-                                    while ($incidental_row = mysqli_fetch_array($incidental_results)) {
-                                        echo '<tr>';
-                                        echo '<td class="centre_info_cell">';
-                                        echo '<p>' . $incidental_row["subsidy_category"] . '</p>';
-                                        echo '</td>';
-                                        echo '<td class="centre_info_cell">';
-                                        echo '<p>' . $incidental_row["service_type"] . '</p>';
-                                        echo '</td>';
-                                        echo '</tr>';
-                                    }
+                                foreach ($centre_result["centre_subsidies"] as $entry) {
+                                    echo '<tr>';
+                                    echo '<td class="centre_info_cell">';
+                                    echo '<p>' . $entry["subsidy_category"] . '</p>';
+                                    echo '</td>';
+                                    echo '<td class="centre_info_cell">';
+                                    echo '<p>' . $entry["service_type"] . '</p>';
+                                    echo '</td>';
+                                    echo '</tr>';
                                 }
                                 ?>
 
@@ -278,14 +237,6 @@ if ($conn->connect_error) {
             </section>
 
         </main>
-        <?php
-        if ($success) {
-            $result->free_result();
-            $service_results->free_result();
-            $incidental_results->free_result();
-            $conn->close();
-        }
-        ?>
         <!--  footer  --> 
         <?php
         include 'footer.inc.php';

@@ -1,14 +1,8 @@
 <!DOCTYPE html>
 <!-- Database connection-->
 <?php
-require_once('../protected/config.php');
-$conn = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
-if ($conn->connect_error) {
-    $errorMsg = "Connection failed: " . $conn->connect_error;
-    $success = false;
-} else {
-    $success = true;
-}
+require 'vendor/autoload.php';
+require_once('../protected/configmdb.php');
 define("results_per_page", 10);
 ?>
 <html lang="en">
@@ -240,32 +234,36 @@ define("results_per_page", 10);
 
 
 
-                        <!--products-->
+                        <!--results-->
                         <div class="col-xs-12  col-md-8  ">
                             <div class="card ">
                                 <div class="row">
                                     <?php
                                     //Default query
-                                    $sql = "";
+                                    $mongoQuery = array();
 
                                     //Name filter
                                     if (isset($_GET['name_filter']) && !empty($_GET['name_filter'])) {
-                                        $sql .= " AND centre_name LIKE '%" . $_GET['name_filter'] . "%'";
+                                        //$mongoQuery["centre_name"] = ['$regex' => new MongoDB\BSON\Regex("/" . $_GET['name_filter'] . "/")];
+                                        $mongoQuery["centre_name"] = new MongoDB\BSON\Regex($_GET['name_filter'], 'i');
                                     }
 
                                     //Location filter
                                     if (isset($_GET['location_filter']) && !empty($_GET['location_filter'])) {
-                                        $sql .= " AND centre_address LIKE '%" . $_GET['location_filter'] . "%'";
+                                        $mongoQuery["centre_address"] = new MongoDB\BSON\Regex($_GET['location_filter'], 'i');
                                     }
 
                                     //Opening days filter
                                     if (isset($_GET['opening_days_filter']) && !empty($_GET['opening_days_filter'])) {
                                         if ($_GET['opening_days_filter'] == "saturday") {
-                                            $sql .= " AND weekday_full_day='na' AND saturday<>'na'";
+                                            $mongoQuery["weekday_full_day"] = "na";
+                                            $mongoQuery["saturday"] = ['$ne' => "na"];
                                         } else if ($_GET['opening_days_filter'] == "weekdays") {
-                                            $sql .= " AND weekday_full_day<>'na' AND saturday='na'";
+                                            $mongoQuery["weekday_full_day"] = ['$ne' => "na"];
+                                            $mongoQuery["saturday"] = "na";
                                         } else {
-                                            $sql .= " AND weekday_full_day<>'na' AND saturday<>'na'";
+                                            $mongoQuery["weekday_full_day"] = ['$ne' => "na"];
+                                            $mongoQuery["saturday"] = ['$ne' => "na"];
                                         }
                                     }
 
@@ -275,103 +273,88 @@ define("results_per_page", 10);
                                         if ($_GET['vacancy_filter'] === 'anytime') {
                                             
                                         } else {
-                                            $sql .= " AND " . $_GET['child_group_filter'] . "='" . $_GET['vacancy_filter'] . "'";
+                                            $mongoQuery[$_GET['child_group_filter']] = $_GET['vacancy_filter'];
                                         }
                                     }
 
                                     //Languages filter
                                     if (isset($_GET['language_chinese_filter'])) {
-                                        $sql .= " AND second_languages_offered LIKE '%Chinese%'";
+                                        $mongoQuery["second_languages_offered"] = new MongoDB\BSON\Regex('Chinese', 'i');
                                     }
                                     if (isset($_GET['language_malay_filter'])) {
-                                        $sql .= " AND second_languages_offered LIKE '%Malay%'";
+                                        $mongoQuery["second_languages_offered"] = new MongoDB\BSON\Regex('Malay', 'i');
                                     }
                                     if (isset($_GET['language_tamil_filter'])) {
-                                        $sql .= " AND second_languages_offered LIKE '%Tamil%'";
+                                        $mongoQuery["second_languages_offered"] = new MongoDB\BSON\Regex('Tamil', 'i');
                                     }
 
                                     //Misc filters
                                     if (isset($_GET['gst_filter'])) {
-                                        $sql .= " AND gst_registration='Yes'";
+                                        $mongoQuery["gst_registration"] = "Yes";
                                     }
                                     if (isset($_GET['transport_filter'])) {
-                                        $sql .= " AND provision_of_transport='Yes'";
+                                        $mongoQuery["provision_of_transport"] = "Yes";
                                     }
                                     if (isset($_GET['food_filter'])) {
-                                        $sql .= " AND food_offered LIKE '% Halal %'";
+                                        $mongoQuery["food_offered"] = new MongoDB\BSON\Regex(' Halal ', 'i');
                                     }
                                     if (isset($_GET['spark_filter'])) {
-                                        $sql .= " AND spark_certified='Yes'";
+                                        $mongoQuery["spark_certified"] = "Yes";
                                     }
 
-                                    //End of query
-                                    //$sql .= " LIMIT " . results_per_page;
-
-                                    //$count_sql = "SELECT COUNT(*) FROM sql1902691tlx.centre WHERE TRUE" . $sql;
-                                    $count_sql = "SELECT COUNT(*) FROM sql1902691tlx.centre AS c LEFT OUTER JOIN (SELECT cs.centre_code, AVG(cs.fees) as avg_fees FROM sql1902691tlx.centre_service AS cs GROUP BY cs.centre_code) AS cs2 ON c.centre_code=cs2.centre_code WHERE avg_fees IS NOT NULL" . $sql . " ORDER BY avg_fees";
-                                     
 
                                     $num_results = 0;
 
-                                    //Count number of results
-                                    if ($result = mysqli_query($conn, $count_sql)) {
-                                        $num_results = mysqli_fetch_array($result)[0];
-                                        $result->free_result();
-                                    }
-                                    
+                                    $centre_collection = $mongo->alfredng_db->centre;
+                                    $count_mongo = $centre_collection->count($mongoQuery);
+                                    $num_results = $count_mongo;
+
                                     $num_pages = ceil($num_results / results_per_page);
                                     $page = isset($_GET['page']) ? $_GET['page'] : 1;
 
                                     $start_page = ($page - 1) * results_per_page;
-                                    //$actual_sql = "SELECT * FROM sql1902691tlx.centre WHERE TRUE" . $sql . " LIMIT " . $start_page . "," . results_per_page;
-                                    $actual_sql = "SELECT * FROM sql1902691tlx.centre AS c LEFT OUTER JOIN (SELECT cs.centre_code, AVG(cs.fees) as avg_fees FROM sql1902691tlx.centre_service AS cs GROUP BY cs.centre_code) AS cs2 ON c.centre_code=cs2.centre_code WHERE avg_fees IS NOT NULL" . $sql . " ORDER BY avg_fees LIMIT " . $start_page . "," . results_per_page;
-                                     
-                                    //Execute actual query to get data
-                                    if ($result = mysqli_query($conn, $actual_sql)) {
-                                        if (mysqli_num_rows($result) > 0) {
-                                            while ($row = mysqli_fetch_array($result)) {
-                                                //echo $row["centre_name"] . "<br>";
 
-                                                echo '<div class="col-xs-12 col-md-12 centre_card">';
-                                                echo '<figure>';
+                                    $mongo_results = $centre_collection->find($mongoQuery, ["limit" => results_per_page, "skip" => $start_page]);
+                                    $show_pagination = false;
+                                    foreach ($mongo_results as $row) {
+                                        //echo $row["centre_name"] . "<br>";
 
-                                                echo '<div class="row">';
-                                                echo '<div class="col-md-4">';
-                                                echo '<img src="images/centre.jpg" alt="' . $row["centre_name"] . '" class="img-responsive " />';
-                                                echo '</div>';
+                                        echo '<div class="col-xs-12 col-md-12 centre_card">';
+                                        echo '<figure>';
 
-                                                //echo'<a href="centre_info.php?centre_code=' . $row["centre_code"] . '">';
+                                        echo '<div class="row">';
+                                        echo '<div class="col-md-4">';
+                                        echo '<img src="images/centre.jpg" alt="' . $row["centre_name"] . '" class="img-responsive " />';
+                                        echo '</div>';
 
-                                                echo'<div class="card-body">';
+                                        //echo'<a href="centre_info.php?centre_code=' . $row["centre_code"] . '">';
 
-                                                echo'<div class="card-title">';
-                                                echo'<a href= "centre_info.php?centre_code=' . $row["centre_code"] . '"><h3>' . $row["centre_name"] . '</h3></a>';
-                                                echo'</div>';
+                                        echo'<div class="card-body">';
 
-                                                echo'<p class="card-text">Address: ' . $row["centre_address"] . '</p>';
-                                                echo'<p class="card-text">Centre code: ' . $row["centre_code"] . '</p>';
-                                                echo'<p class="card-text">Contact no.: ' . $row["centre_contact_no"] . '</p>';
-                                                echo'<p class="card-text">Email address: ' . $row["centre_email_address"] . '</p>';
-                                                echo'<p class="card-text">Average service fees: $' . number_format(floatval($row["avg_fees"]), 2) . '</p>';
+                                        echo'<div class="card-title">';
+                                        echo'<a href= "centre_info.php?centre_code=' . $row["centre_code"] . '"><h3>' . $row["centre_name"] . '</h3></a>';
+                                        echo'</div>';
 
-                                                echo'</div>';
+                                        echo'<p class="card-text">Address: ' . $row["centre_address"] . '</p>';
+                                        echo'<p class="card-text">Centre code: ' . $row["centre_code"] . '</p>';
+                                        echo'<p class="card-text">Contact no.: ' . $row["centre_contact_no"] . '</p>';
+                                        echo'<p class="card-text">Email address: ' . $row["centre_email_address"] . '</p>';
+                                        //echo'<p class="card-text">Average service fees: $' . number_format(floatval($row["avg_fees"]), 2) . '</p>';
 
-                                                echo'</div>';
-                                                echo' </figure>';
-                                                echo'</div>';
-                                            }
+                                        echo'</div>';
 
-                                            //Pagination       
-                                            echo '<p>Results: ' . $num_results . '</p>';
-                                            echo '<p>Page ' . $page . ' of ' . $num_pages . '</p>';
-                                            echo '<button class="page_button" onclick="prevPage(' . $page . ', ' . $num_pages . ')"' . ($page == 1 ? 'disabled' : '') . '>Prev page</button>';
-                                            echo '<button class="page_button" onclick="nextPage(' . $page . ', ' . $num_pages . ')"' . ($page == $num_pages ? 'disabled' : '') . '>Next page</button>';
-                                        }
-                                        $result->free_result();
+                                        echo'</div>';
+                                        echo' </figure>';
+                                        echo'</div>';
+                                        $show_pagination = true;
                                     }
 
-                                    if ($success) {
-                                        $conn->close();
+                                    //Pagination   
+                                    if ($show_pagination) {
+                                        echo '<p>Results: ' . $num_results . '</p>';
+                                        echo '<p>Page ' . $page . ' of ' . $num_pages . '</p>';
+                                        echo '<button class="page_button" onclick="prevPage(' . $page . ', ' . $num_pages . ')"' . ($page == 1 ? 'disabled' : '') . '>Prev page</button>';
+                                        echo '<button class="page_button" onclick="nextPage(' . $page . ', ' . $num_pages . ')"' . ($page == $num_pages ? 'disabled' : '') . '>Next page</button>';
                                     }
                                     ?>
 

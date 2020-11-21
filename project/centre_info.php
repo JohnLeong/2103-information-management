@@ -249,14 +249,14 @@ if ($conn->connect_error) {
                                 </tr>
 
                                 <?php
-                                if (mysqli_num_rows($incidental_results) > 0) {
-                                    while ($incidental_row = mysqli_fetch_array($incidental_results)) {
+                                if (mysqli_num_rows($subsidy_results) > 0) {
+                                    while ($subsidy_row = mysqli_fetch_array($subsidy_results)) {
                                         echo '<tr>';
                                         echo '<td class="centre_info_cell">';
-                                        echo '<p>' . $incidental_row["subsidy_category"] . '</p>';
+                                        echo '<p>' . $subsidy_row["subsidy_category"] . '</p>';
                                         echo '</td>';
                                         echo '<td class="centre_info_cell">';
-                                        echo '<p>' . $incidental_row["service_type"] . '</p>';
+                                        echo '<p>' . $subsidy_row["service_type"] . '</p>';
                                         echo '</td>';
                                         echo '</tr>';
                                     }
