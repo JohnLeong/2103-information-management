@@ -1,5 +1,7 @@
 <?php
-require_once('../../protected/config.php');
+use MongoDB\BSON\Regex;
+require '../vendor/autoload.php';
+require_once('../../protected/configmdb.php');
 
 //Admin_Catering
 $centreCode = $class_Lic = $sCategory = "";
@@ -20,35 +22,17 @@ function sanitize_input($data) {
 }
 
 if ($success) {
-    addSubsidy();
+     if (isset($_POST['updatebutton'])) {
+        $collection = $mongo->alfredng_db->centre;
+        $insertOneResult  = $collection->updateOne([ 'centre_code' => $centreCode], (array('$push' => array("centre_subsidies" => array("subsidy_category" => $sCategory)))));
+//        $insertOneResult  = $collection->updateOne([ 'centre_code' => $centreCode, 'centre_subsidies' ], array('$push' => array('subsidy_category' => $sCategory)));
+
+//        $answers->update(array('userId' => 1, 'questions.questionId' => '1'), array('$push' => array('questions.$.ans' => 'try2')));        
+     }
     header("location: admin_centreServicesDt.php");
-    echo '<script>alert("Data has been updated successfully."); </script>';
+    echo '<script>alert("Data has been create successfully."); </script>';
 } else {
     echo '<script>alert("Data update failed. Please try again."); </script>';
 }
 
-function addSubsidy() {
-
-    if (isset($_POST['updatebutton'])) {
-        $centreCode = sanitize_input($_POST["centreCode"]);
-        $centreName = sanitize_input($_POST["centreName"]);
-        $sCategory = sanitize_input($_POST["sCategory"]);
-        
-        $conn = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
-        if ($conn->connect_error) {
-            $errorMsg = "Connection failed: " . $conn->connect_error;
-            $success = false;
-        } else {
-            $sql = "INSERT INTO centre_subsidies (centre_code, subsidy_category)"
-                    . "VALUES ('$centreCode', '$sCategory');";
-            
-            if (!$conn->query($sql)) {
-                $errorMsg = "Database error: " . $conn->error;
-                $success = false;
-            }
-        }
-    }
-
-    $conn->close();
-}
 ?>

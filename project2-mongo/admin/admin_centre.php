@@ -1,10 +1,12 @@
 <?php
-require_once('../../protected/config.php');
-$conn = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
-if ($conn->connect_error) {
-    $errorMsg = "Connection failed: " . $conn->connect_error;
-    $success = false;
-}
+use MongoDB\BSON\Regex;
+require '../vendor/autoload.php';
+require_once('../../protected/configmdb.php');
+//$conn = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+//if ($conn->connect_error) {
+//    $errorMsg = "Connection failed: " . $conn->connect_error;
+//    $success = false;
+//}
 $fullname = $orderid = $email = $date = $time = $price = $errorMsg = "";
 $success = true;
 
@@ -15,6 +17,7 @@ function sanitize_input($data) {
     $data = htmlspecialchars($data);
     return $data;
 }
+session_start();
 
 if(isset($_SESSION['email'])) {
     $currentUserprofile = $_SESSION['email'];
@@ -113,16 +116,20 @@ if ( ! isset( $_GET['startrow'] ) or ! is_numeric( $_GET['startrow'] ) ) {
 }
                                
 if (!isset($_POST['searchInput'])){
-    $result = $conn->query("SELECT * FROM centre LIMIT $startrow, 20" );
-   
+    $collection = $mongo->alfredng_db->centre;
+    $result = $collection->find(array(),array('limit' => 20));
+
+//    $result = $conn->query("SELECT * FROM centre LIMIT $startrow, 20" );
 } else {
     $searchvalue = $_POST['searchInput'];
     $_SESSION['searchvalue'] = $_POST['searchInput'];
-    $sql = "SELECT * FROM centre C WHERE C.centre_name LIKE '%$searchvalue%' LIMIT $startrow, 20;";
-    $result = $conn->query($sql) or
-    die( mysql_error() );
+    
+    $collection = $mongo->alfredng_db->centre;
+    $regex = new MongoDB\BSON\Regex($searchvalue, 'i'); 
+    $result = $collection->find(['centre_name' => $regex ]);
+
 }
-        if ( $result->num_rows > 0 ) {
+        if ( $result != "" ) {
             foreach ($result as $row) {
                 ?>
                                                 <tbody>
@@ -160,8 +167,6 @@ if (!isset($_POST['searchInput'])){
                                                     </tr>
                 <?php
             }
-            (isset($result)) ? $result->free_result() : "";
-            unset($row);
         } else {
             ?>    
                                                 <tr>

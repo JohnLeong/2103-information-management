@@ -1,5 +1,7 @@
 <?php
-require_once('../../protected/config.php');
+use MongoDB\BSON\Regex;
+require '../vendor/autoload.php';
+require_once('../../protected/configmdb.php');
 
 //Admin_Catering
 $serviceType = $sCategory = $totalFees = $maxSubsidy = $lowSubsidy = $bSubsidy = $maxFamilypay = 
@@ -36,44 +38,19 @@ function sanitize_input($data) {
 }
 
 if ($success) {
-    createGovSub();
+    if (isset($_POST['updatebutton'])) {
+        $collection = $mongo->alfredng_db->govt_subsidies;
+        
+        $insertOneResult  = $collection->insertOne([ 'subsidy_category' => $sCategory, 'monthly_income' => $Income, 
+            'service_type' => $serviceType, 'total_fees' => $totalFees, 'basic_subsidy' => $bSubsidy, 'max_additional_subsidy' => $maxSubsidy,
+            'max_family_pays' => $maxFamilypay, 'low_additional_subsidy' => $lowSubsidy, 'low_family_pays' => $lowFamilypay
+            ]);
+    }
+
     header("location: admin_govSubsidy.php");
     echo '<script>alert("Data has been updated successfully."); </script>';
 } else {
     echo '<script>alert("Data update failed. Please try again."); </script>';
 }
 
-function createGovSub() {
-
-    if (isset($_POST['updatebutton'])) {
-        $serviceType = sanitize_input($_POST["serviceType"]);
-        $sCategory = sanitize_input($_POST["sCategory"]);
-        (float)$totalFees = sanitize_input($_POST["totalFees"]);
-        (float)$maxSubsidy = sanitize_input($_POST["maxSubsidy"]);
-        (float)$lowSubsidy = sanitize_input($_POST["lowSubsidy"]);
-        (float)$bSubsidy = sanitize_input($_POST["bSubsidy"]);
-        (float)$maxFamilypay = sanitize_input($_POST["maxFamilypay"]);
-        (float)$lowFamilypay = sanitize_input($_POST["lowFamilypay"]);
-        (float)$Income = sanitize_input($_POST["Income"]);
-
-        
-        $conn = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
-        if ($conn->connect_error) {
-            $errorMsg = "Connection failed: " . $conn->connect_error;
-            $success = false;
-        } else {
-            $sql = "INSERT INTO govt_subsidies (subsidy_category, monthly_income, service_type, total_fees, basic_subsidy,"
-                    . "max_additional_subsidy, max_family_pays, low_additional_subsidy, low_family_pays) VALUES "
-                    . "('$sCategory', $Income, '$serviceType', $totalFees, $bSubsidy, $maxSubsidy, $maxFamilypay, $lowSubsidy, $lowFamilypay)";
-
-            if (!$conn->query($sql)) {
-                $errorMsg = "Database error: " . $conn->error;
-                $success = false;
-            }
-            $errorMsg = "Database error: " . $conn->error;
-        }
-    }
-
-    $conn->close();
-}
 ?>

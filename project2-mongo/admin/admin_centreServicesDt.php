@@ -1,10 +1,11 @@
 <?php
-require_once('../../protected/config.php');
-$conn = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
-if ($conn->connect_error) {
-    $errorMsg = "Connection failed: " . $conn->connect_error;
-    $success = false;
-}
+use MongoDB\BSON\Regex;
+require '../vendor/autoload.php';
+require_once('../../protected/configmdb.php');
+
+error_reporting(E_ERROR | E_PARSE);
+
+
 $fullname = $orderid = $email = $date = $time = $price = $errorMsg = "";
 $success = true;
 
@@ -15,45 +16,63 @@ function sanitize_input($data) {
     $data = htmlspecialchars($data);
     return $data;
 }
-
+session_start();
 if(isset($_POST['dataString'])) {
     $_SESSION['curUserData'] = $_POST['dataString'];
     echo $_SESSION['curUserData'];
 }else{
-//    header("Location: ../homepage.php");
+    header("Location: ../homepage.php");
 }
 
-//if(isset($_SESSION['email'])) {
-//    $currentUserprofile = $_SESSION['email'];
-//}else{
-//    header("Location: ../homepage.php");
-//}
+
 
 if(isset($_POST['save'])){
+    
+    $collection = $mongo->alfredng_db->centre;
+    $result = $collection->find([ 'centre_code' => $_SESSION['curUserData'][1]]);    
+    
     $checkbox = $_POST['check'];
     for($i=0;$i<count($checkbox);$i++){
         $del_id = $checkbox[$i]; 
-        mysqli_query($conn,"DELETE FROM centre_service WHERE centre_service_id='".$del_id."'");
-        $message = "Data deleted successfully !";
+        $deleteResult = $collection->updateOne(
+            array("centre_code" => $_SESSION['curUserData'][1]),
+            (array('$pull' => array("centre_service" => array("type_of_service" => $del_id))))
+        );
     }
+    header("location: admin_centreServicesDt.php");
+    
 }
 
 if(isset($_POST['save2'])){
+    $collection = $mongo->alfredng_db->centre;
+    $result = $collection->find([ 'centre_code' => $_SESSION['curUserData'][1]]);    
+    
     $checkbox2 = $_POST['check2'];
     for($i2=0;$i2<count($checkbox2);$i2++){
         $del_id2 = $checkbox2[$i2]; 
-        mysqli_query($conn,"DELETE FROM incidental_charge WHERE incidental_charges_id ='".$del_id2."'");
-        $message = "Data deleted successfully !";
+        $deleteResult = $collection->updateOne(
+            array("centre_code" => $_SESSION['curUserData'][1]),
+            (array('$pull' => array("incidental_charges" => array("incidental_charges" => $del_id2))))
+        );
     }
+    header("location: admin_centreServicesDt.php");
+    
 }
 
 if(isset($_POST['save3'])){
+    
+    
+    $collection = $mongo->alfredng_db->centre;
+    $result = $collection->find([ 'centre_code' => $_SESSION['curUserData'][1]]);    
     $checkbox3 = $_POST['check3'];
     for($i3=0;$i3<count($checkbox3);$i3++){
         $del_id3 = $checkbox3[$i3]; 
-        mysqli_query($conn,"DELETE FROM centre_subsidies WHERE centre_subsidy_id ='".$del_id3."'");
-        $message = "Data deleted successfully !";
+        $deleteResult = $collection->updateOne(
+            array("centre_code" => $_SESSION['curUserData'][1]),
+            (array('$pull' => array("centre_subsidies" => array("subsidy_category" => $del_id3))))
+        );
     }
+    header("location: admin_centreServicesDt.php");
 }
 
 ?>
@@ -129,25 +148,28 @@ include 'adminHeader.inc.php';
                                                 </thead>
                                                 <?php
                                                 $i=0;
-                                                $result = $conn->query("SELECT * FROM centre_service WHERE centre_code = '".$_SESSION['curUserData'][1]."';");
-//                                                $conn->close();  
-                                                if ( $result-> num_rows > 0 ) {
-                                                    foreach ($result as $row) { ?>
+                                                $collection = $mongo->alfredng_db->centre;
+                                                $result = $collection->find([ 'centre_code' => $_SESSION['curUserData'][1]]);
+                                                if ( $result != "" ) {
+                                                    foreach ($result as $entry) {
+;
+                                                        for ($i = 0; $i < count($entry['centre_service']); $i++){
+                                                            
+                                                        ?>
                                                              <tr>
                                                                 <td class="counterCell"></td>
-                                                                <td><?php echo $row['class_of_licence'] ?></td>
-                                                                <td><?php echo $row['type_of_service'] ?></td>
-                                                                <td><?php echo $row['levels_offered'] ?></td>
-                                                                <td><?php echo $row['fees'] ?></td>
-                                                                <td><?php echo $row['type_of_citizenship'] ?></td>
-                                                                <td><input type="checkbox" id="checkItem" name="check[]" value="<?php echo $row["centre_service_id"]; ?>"></td>
+                                                                <td><?php echo $entry['centre_service'][$i]['class_of_licence'] ?></td>
+                                                                <td><?php echo $entry['centre_service'][$i]['type_of_service'] ?></td>
+                                                                <td><?php echo $entry['centre_service'][$i]['levels_offered'] ?></td>
+                                                                <td><?php echo $entry['centre_service'][$i]['fees'] ?></td>
+                                                                <td><?php echo $entry['centre_service'][$i]['type_of_citizenship'] ?></td>
+                                                                <td><input type="checkbox" id="checkItem" name="check[]" value="<?php echo $entry['centre_service'][$i]['type_of_service'] ?>"></td>
          `                                                      
                                                              </tr>
                                                 <?php
                                                     $i++;
+                                                        }
                                                     }
-                                                    (isset($result)) ? $result->free_result() : "";
-                                                    unset($row);
                                                 }
                                                 ?>   
                                             </table>
@@ -207,22 +229,25 @@ include 'adminHeader.inc.php';
                                                 </thead>
                                                 <?php
                                                 $i2=0;
-                                                $result2 = $conn->query("SELECT * FROM incidental_charge WHERE centre_code = '".$_SESSION['curUserData'][1]."';");
-                                                if ( $result2-> num_rows > 0 ) {
-                                                    foreach ($result2 as $row2) { ?>
-                                                             <tr>
-                                                                <td class="counterCell"></td>
-                                                                <td><?php echo $row2['incidental_charges'] ?></td>
-                                                                <td><?php echo $row2['frequency'] ?></td>
-                                                                <td><?php echo $row2['amount'] ?></td>
-                                                                <td><input type="checkbox" id="checkItem" name="check2[]" value="<?php echo $row2["incidental_charges_id"]; ?>"></td>
-         `                                                      
-                                                             </tr>
+                                                $collection = $mongo->alfredng_db->centre;
+                                                $result2 = $collection->find([ 'centre_code' => $_SESSION['curUserData'][1]]);
+//                                              
+                                                if ( $result2 != "" ) {
+                                                    foreach ($result2 as $entry) {
+                                                        for ($i = 0; $i < count($entry['incidental_charges']); $i++){
+                                                        
+                                                            ?>
+                                                            <tr>
+                                                               <td class="counterCell"></td>
+                                                               <td><?php echo $entry['incidental_charges'][$i]['incidental_charges'] ?></td>
+                                                               <td><?php echo $entry['incidental_charges'][$i]['frequency'] ?></td>
+                                                               <td><?php echo $entry['incidental_charges'][$i]['amount'] ?></td>
+                                                               <td><input type="checkbox" id="checkItem" name="check2[]" value="<?php echo $entry['incidental_charges'][$i]['incidental_charges'] ?>"></td>
+         `                                                  </tr>
                                                 <?php
                                                     $i2++;
+                                                        }
                                                     }
-                                                    (isset($result2)) ? $result2->free_result() : "";
-                                                    unset($row2);
                                                 }
                                                 ?>   
                                             </table>
@@ -269,21 +294,22 @@ include 'adminHeader.inc.php';
                                                 </thead>
                                                 <?php
                                                 $i3=0;
-                                                $result3 = $conn->query("SELECT * FROM centre_subsidies WHERE centre_code = '".$_SESSION['curUserData'][1]."';");
-//                                                $conn->close();  
-                                                if ( $result3-> num_rows > 0 ) {
-                                                    foreach ($result3 as $row3) { ?>
+                                                $collection = $mongo->alfredng_db->centre;
+                                                $result3 = $collection->find([ 'centre_code' => $_SESSION['curUserData'][1]]);
+                                                
+                                                if ( $result3 != "" ) {
+                                                    foreach ($result3 as $entry) {
+                                                        for ($i = 0; $i < count($entry['centre_subsidies']); $i++){ ?>
                                                              <tr>
                                                                 <td class="counterCell"></td>
-                                                                <td><?php echo $row3['subsidy_category'] ?></td>
-                                                                <td><input type="checkbox" id="checkItem3" name="check3[]" value="<?php echo $row3["centre_subsidy_id"]; ?>"></td>
+                                                                <td><?php echo $entry['centre_subsidies'][$i]['subsidy_category'] ?></td>
+                                                                <td><input type="checkbox" id="checkItem3" name="check3[]" value="<?php echo $entry['centre_subsidies'][$i]['subsidy_category'] ?>"></td>
          `                                                      
                                                              </tr>
                                                 <?php
-                                                    $i3++;
+                                                        }
                                                     }
-                                                    (isset($result3)) ? $result3->free_result() : "";
-                                                    unset($row3);
+                                                    $i3++;
                                                 }
                                                 ?>   
                                             </table>
@@ -301,19 +327,16 @@ include 'adminHeader.inc.php';
                                                         <select name="sCategory" id="sCategory" class="form-control" required>
                                                             <option value="">Select</option>
                                                         <?php
-                                                        $result4 = $conn->query("SELECT * FROM govt_subsidies;");
-                                                        $conn->close();  
-                                                        if ( $result4-> num_rows > 0 ) {
+                                                            $collection = $mongo->alfredng_db->govt_subsidies;
+                                                            $result4 = $collection->find();
+                                                        if ( $result4 != "") {
                                                             foreach ($result4 as $row4) { ?>
                                                                     <option value="<?php echo $row4['subsidy_category']?>"><?php echo $row4['subsidy_category']?></option>                                                                
                                                         <?php
                                                             }
-                                                            (isset($result4)) ? $result4->free_result() : "";
-                                                            unset($row4);
                                                         }
                                                         ?>   
                                                         </select>
-<!--                                                        <input type="text"  placeholder="e.g. 'Class B (Child Care)'" required>-->
                                                     </div>
                                                    
                                                 </div>

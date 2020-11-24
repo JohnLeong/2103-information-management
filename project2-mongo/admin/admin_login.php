@@ -37,7 +37,7 @@ and open the template in the editor.
                         <div class="row">
                             <div class="col-sm-12 pen">
                                 <div class="page-header">
-                                    
+                                    ALFRED
                                     <!--<h1>Hello <?php echo $_SESSION['fname'] . " " . $_SESSION['lname']; ?> </h1>FROM DB -->
                                 </div>
                             </div>

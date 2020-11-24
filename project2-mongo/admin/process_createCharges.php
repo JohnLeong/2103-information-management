@@ -1,5 +1,7 @@
 <?php
-require_once('../../protected/config.php');
+use MongoDB\BSON\Regex;
+require '../vendor/autoload.php';
+require_once('../../protected/configmdb.php');
 
 //Admin_Catering
 $centreCode = $class_Lic = $icharges = $amount = $frequency = "";
@@ -22,37 +24,18 @@ function sanitize_input($data) {
 }
 
 if ($success) {
-    addCharge();
+    if (isset($_POST['updatebutton'])) {
+        $collection = $mongo->alfredng_db->centre;
+        $insertOneResult  = $collection->updateOne([ 'centre_code' => $centreCode], 
+                (array('$push' => array("incidental_charges" => 
+                    array("incidental_charges" => $icharges, "frequency" => $frequency, 
+                    "amount" => $amount)))));     
+    }
     header("location: admin_centreServicesDt.php");
     echo '<script>alert("Data has been updated successfully."); </script>';
 } else {
     echo '<script>alert("Data update failed. Please try again."); </script>';
 }
 
-function addCharge() {
 
-    if (isset($_POST['updatebutton'])) {
-        $centreCode = sanitize_input($_POST["centreCode"]);
-        $centreName = sanitize_input($_POST["centreName"]);
-        $icharges = sanitize_input($_POST["Icharges"]);
-        (float)$amount = sanitize_input($_POST["Amount"]);
-        $frequency = sanitize_input($_POST["Frequency"]);
-        
-        $conn = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
-        if ($conn->connect_error) {
-            $errorMsg = "Connection failed: " . $conn->connect_error;
-            $success = false;
-        } else {
-            $sql = "INSERT INTO incidental_charge (centre_code, centre_name, incidental_charges, frequency, amount)"
-                    . "VALUES ('$centreCode', '$centreName', '$icharges', '$frequency', $amount);";
-            
-            if (!$conn->query($sql)) {
-                $errorMsg = "Database error: " . $conn->error;
-                $success = false;
-            }
-        }
-    }
-
-    $conn->close();
-}
 ?>

@@ -1,5 +1,8 @@
 <?php
-require_once('../../protected/config.php');
+require '../vendor/autoload.php';
+require_once('../../protected/configmdb.php');
+
+$collection = $mongo->alfredng_db->centre;
 
 //Admin_Catering
 $centreCode = $centreName = $orgCode = $orgDesc = $serviceModel = $contactNum = $emailAddress = 
@@ -46,63 +49,24 @@ function sanitize_input($data) {
 }
 
 if ($success) {
-    createCentre();
+     if (isset($_POST['updatebutton'])) {
+        $insertOneResult  = $collection->insertOne([ 'tp_code' => 'na', 'centre_code' => $centreCode, 'centre_name' => $centreName, 'organisation_code' => $orgCode,
+            'organisation_description' => $orgDesc, 'service_model' => $serviceModel, 'centre_contact_no' => $contactNum, 'centre_email_address' => $emailAddress,
+            'centre_address' => $centreAddress, 'postal_code' => $postalCode, 'centre_website' => $centreWeb, 'infant_vacancy' => $infantVac,            
+            'pg_vacancy' => $pgVac, 'n1_vacancy' => $n1Vac, 'n2_vacancy' => $n2Vac, 'k1_vacancy' => $k1Vac, 'k2_vacancy' => $k2Vac, 'food_offered' => $fdOffer,            
+            'second_languages_offered' => $secLang, 'spark_certified' => $sparkCert, 'weekday_full_day' => $wkFullDay, 'saturday' => $saturday,
+            'scheme_type' => $schemeType, 'extended_operating_hours' => $extendOpt, 'provision_of_transport' => $proTransport, 'government_subsidy' => $govSub,
+            'gst_registration' => $gstReg, 'last_updated' => '2102-01-02',
+            "centre_service" => array(), "incidental_charges" => array(), "licence_history" => array(), "centre_subsidies" => array()
+            ]);
+//      $insertOneResult->getInsertedCount();
+     }
+
+   
     header("location: admin_centre.php");
-    echo '<script>alert("Data has been updated successfully."); </script>';
+    echo '<script>alert("Data has been create successfully."); </script>';
 } else {
     echo '<script>alert("Data update failed. Please try again."); </script>';
 }
 
-function createCentre() {
-
-    if (isset($_POST['updatebutton'])) {
-        $centreCode =  ($_POST["centreCode"]);
-        $centreName =  ($_POST["centreName"]);
-        $orgCode =  ($_POST["orgCode"]);
-        $orgDesc =  ($_POST["orgDesc"]);
-        $serviceModel =  ($_POST["serviceModel"]);
-        $contactNum =  ($_POST["contactNum"]);
-        $emailAddress =  ($_POST["emailAddress"]);
-        $centreAddress =  ($_POST["centreAddress"]);
-        $postalCode =  ($_POST["postalCode"]);
-        $centreWeb =  ($_POST["centreWeb"]);
-        $infantVac =  ($_POST["infantVac"]);
-        $pgVac =  ($_POST["pgVac"]);
-        $n1Vac =  ($_POST["n1Vac"]);
-        $n2Vac =  ($_POST["n2Vac"]);
-        $k1Vac =  ($_POST["k1Vac"]);
-        $k2Vac =  ($_POST["k2Vac"]);
-        $fdOffer =  ($_POST["fdOffer"]);
-        $sparkCert = ($_POST["sparkCert"]);
-        $secLang =  ($_POST["secLang"]);
-        $wkFullDay =  ($_POST["wkFullDay"]);
-        $saturday =  ($_POST["saturday"]);
-        $schemeType =  ($_POST["schemeType"]);
-        $extendOpt =  ($_POST["extendOpt"]);
-        $proTransport =  ($_POST["proTransport"]);
-        $govSub =  ($_POST["govSub"]);
-        $gstReg =  ($_POST["gstReg"]);
-        
-        $conn = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
-        if ($conn->connect_error) {
-            $errorMsg = "Connection failed: " . $conn->connect_error;
-            $success = false;
-        } else {
-            $sql = "INSERT INTO `centre` (`tp_code`, `centre_code`, `centre_name`, `organisation_code`, `organisation_description`, `service_model`, `centre_contact_no`, "
-                . "`centre_email_address`, `centre_address`, `postal_code`, `centre_website`, `infant_vacancy`, `pg_vacancy`, `n1_vacancy`, `n2_vacancy`, `k1_vacancy`,"
-                . "`k2_vacancy`, `food_offered`, `second_languages_offered`, `spark_certified`, `weekday_full_day`, `saturday`, `scheme_type`, `extended_operating_hours`,"
-                . "`provision_of_transport`, `government_subsidy`, `gst_registration`, `last_updated`) VALUES "
-                . "('na', '$centreCode', '$centreName', '$orgCode', '$orgDesc', '$serviceModel', $contactNum, '$emailAddress', '$centreAddress', $postalCode, '$centreWeb', '$infantVac',"
-                . "'$pgVac', '$n1Vac', '$n2Vac', '$k1Vac', '$k2Vac', '$fdOffer', '$secLang', '$sparkCert', '$wkFullDay', '$saturday', '$schemeType', '$extendOpt', '$proTransport',"
-                . "'$govSub', '$gstReg', '2102-01-02')";
-                 
-            if (!$conn->query($sql)) {
-                $errorMsg = "Database error: " . $conn->error;
-                $success = false;
-            }
-        }
-    }
-
-    $conn->close();
-}
 ?>
