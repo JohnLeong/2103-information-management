@@ -1,31 +1,11 @@
 <!DOCTYPE html>
-<!-- Database connection-->
 
 <?php
-require_once('../protected/config.php');
-$connect = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME);
-if ($connect->connect_error) {
-    $errorMsg = "Connection failed: " . $connect->connect_error;
-    $success = false;
-} else {
+require 'vendor/autoload.php';
+require_once('../protected/configmdb.php');
 
-//$connect = mysqli_connect("localhost", "root", "", "testing");
-    $query = "SELECT type_of_citizenship, AVG(fees) as fees
-                FROM centre_service
-                WHERE fees IN (SELECT fees FROM centre_service)
-                GROUP BY type_of_citizenship
-                ORDER BY AVG(fees) ASC";
-    $result = mysqli_query($connect, $query);
-    
-    $query1 = "SELECT COUNT(centre.centre_name) AS name, type_of_service
-                FROM centre
-                INNER JOIN centre_service ON centre.centre_code=centre_service.centre_code
-                WHERE centre.food_offered = 'na'
-                GROUP BY type_of_service";
-    $result1 = mysqli_query($connect, $query1);
-}
 ?>
-    
+
 
 <html lang="en">
 
@@ -55,8 +35,23 @@ if ($connect->connect_error) {
                 var data = google.visualization.arrayToDataTable([
                     ['Citizenship', 'Average Fees'],
                 <?php
-                while ($row = mysqli_fetch_array($result)) {
-                    echo "['" . $row["type_of_citizenship"] . "', " . $row["fees"] . "],";
+                // select a collection (analogous to a relational database's table)
+                $collection = $mongo->alfredng_db->centre_service;
+
+                $pipeline = array(
+                    array(
+                    '$group' => array('_id' => '$type_of_citizenship', 'avgFee' => array ('$avg' => '$fees'))
+                    ), 
+                    array('$sort' => array("avgFee" => 1)
+                    )
+                ); 
+
+                $cursor = $collection->aggregate($pipeline);
+
+                foreach ($cursor as $pipeline) {
+                    if(isset($pipeline->_id)){
+                        echo "['" . $pipeline->_id. "', " . $pipeline->avgFee . "],";   
+                    } 
                 }
                 ?>
                 ]);
@@ -83,10 +78,34 @@ if ($connect->connect_error) {
                 var data = google.visualization.arrayToDataTable([
                     ['Type Of Service', 'Name'],
                 <?php
-                while ($row = mysqli_fetch_array($result1)) {
-                    echo "['" . $row["type_of_service"] . "', " . $row["name"] . "],";
+
+                $collection = $mongo->alfredng_db->centre_service;
+
+                $pipeline1 = array(
+                                array( '$lookup' => array(
+                                    'from' => 'centre',
+                                    'localField' => 'centre_code',
+                                    'foreignField' => 'centre_code',
+                                    'as' => 'centre_code'
+                                )),
+                                array (
+                                  '$replaceRoot' => array( 'newRoot' => array( '$mergeObjects' => [ array( '$arrayElemAt' => [ '$centre_code', 0 ] ), '$$ROOT' ] ) )
+                                ),
+                                array ('$match' => array('food_offered' => 'na')),
+                    
+                                array( '$group' => array( '_id' => '$type_of_service', 'total' => array ( '$sum' => 1 )))
+                    );
+
+                $cursor1 = $collection->aggregate($pipeline1);
+
+                foreach ($cursor1 as $pipeline1) {
+                    if(isset($pipeline1->_id)){
+                        echo "['" . $pipeline1->_id. "', " . $pipeline1->total . "],";   
+                    } 
                 }
-                ?>
+
+                           ?>
+                        
                 ]);
 
                 var options = { title: 'Count the number of centre that does not offer food based on each type of service(Full Day, Half Day etc)', legend: { position: 'none' } };
@@ -115,6 +134,8 @@ if ($connect->connect_error) {
                 <div class="row">
                     <div class="jumbotron banner">
                         <h1 class="text-center banner-text"> DASHBOARD </h1>
+                        
+                      
                     </div>
                 </div>
             </div>
@@ -138,25 +159,26 @@ if ($connect->connect_error) {
                                 </tr>
 
                                 <?php
-                                require_once('../protected/config.php');
-                                $conn = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
-                                $sql = "SELECT type_of_citizenship, AVG(fees)
-                                FROM centre_service
-                                WHERE fees IN (SELECT fees FROM centre_service)
-                                GROUP BY type_of_citizenship
-                                ORDER BY AVG(fees) ASC;";
+                                $collection = $mongo->alfredng_db->centre_service;
 
-                                $fire = mysqli_query($conn, $sql);
+                                $pipeline = array(
+                                    array(
+                                    '$group' => array('_id' => '$type_of_citizenship', 'avgFee' => array ('$avg' => '$fees'))
+                                    ), 
+                                    array('$sort' => array("avgFee" => 1)
+                                    )
+                                ); 
 
-                                if ($conn->connect_error) {
-                                    $errorMsg = "Connection failed: " . $conn->connect_error;
-                                    $success = false;
-                                }
-                                while ($result = mysqli_fetch_assoc($fire)) {
-                                    echo "<tr><td>" . $result["type_of_citizenship"] . "</td><td>$" . $result["AVG(fees)"] . "</td></tr>";
+                                $cursor = $collection->aggregate($pipeline);
+
+                                foreach ($cursor as $pipeline) {
+                                    if(isset($pipeline->_id)){
+                                        echo "<tr><td>" . $pipeline->_id. "</td><td>$" . $pipeline->avgFee . "</td></tr>";   
+                                    } 
                                 }
                                 echo "</table>";
                                 ?>
+
                             </table>
                             <!-- table of bar chart 1 Section ends -->
                         </div> 
@@ -178,25 +200,35 @@ if ($connect->connect_error) {
                                 </tr>
 
                                 <?php
-                                require_once('../protected/config.php');
-                                $conn = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
-                                $sql = "SELECT DISTINCT centre.centre_name AS name, type_of_service
-                                            FROM centre
-                                            INNER JOIN centre_service ON centre.centre_code=centre_service.centre_code
-                                            WHERE centre.food_offered = 'na'
-                                            ORDER BY type_of_service;";
+                                $collection1 = $mongo->alfredng_db->centre_service;
 
-                                $fire = mysqli_query($conn, $sql);
+                            $pipeline1 = array(
+                                array( '$lookup' => array(
+                                    'from' => 'centre',
+                                    'localField' => 'centre_code',
+                                    'foreignField' => 'centre_code',
+                                    'as' => 'centre_code'
+                                )),
+                                array (
+                                  '$replaceRoot' => array( 'newRoot' => array( '$mergeObjects' => [ array( '$arrayElemAt' => [ '$centre_code', 0 ] ), '$$ROOT' ] ) )
+                                ),
+                                array ('$match' => array('food_offered' => 'na')),
 
-                                if ($conn->connect_error) {
-                                    $errorMsg = "Connection failed: " . $conn->connect_error;
-                                    $success = false;
-                                }
-                                while ($result = mysqli_fetch_assoc($fire)) {
+                               // {$sort:{type_of_service:1}},
 
-                                    echo "<tr><td>" . $result["name"] . "</td><td>" . $result["type_of_service"] . "</td></tr>";
-                                }
-                                echo "</table>";
+                               // {$group:{_id:"$centre_name"}},
+
+                                array( '$project' => array( 'type_of_service' => 1, 'centre_name' => 1) )
+                            );
+
+                            $cursor1 = $collection1->aggregate($pipeline1);
+
+                            foreach ($cursor1 as $pipeline1) {
+                                if(isset($pipeline1->type_of_service)){
+                                    echo "<tr><td>" . $pipeline1->type_of_service. "</td><td>". $pipeline1->centre_name. "</td></tr>";   
+                                } 
+                            }
+                            echo "</table>";
                                 ?>
                             </table>        
                             <!-- table of bar chart 2 Section ends -->
