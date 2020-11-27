@@ -1,12 +1,6 @@
 <?php
-require_once('../protected/config.php');
-$conn = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
-if ($conn->connect_error) {
-    $errorMsg = "Connection failed: " . $conn->connect_error;
-    $success = false;
-} else {
-    $success = true;
-}
+require 'vendor/autoload.php';
+require_once('../protected/configmdb.php');
 ?>
 <!DOCTYPE html>  
 <html>
@@ -49,7 +43,7 @@ if ($conn->connect_error) {
                 <div class="row">
                     <div class="col-md-2"></div>
                     <div id="govt_subsidies_piechart" class="piechart_css col-md-8"></div>
-                     <div class="col-md-2"></div>
+                    <div class="col-md-2"></div>
                 </div>
             </div>
             <div class="container-fluid margin-align">
@@ -64,58 +58,37 @@ if ($conn->connect_error) {
                                         <th scope="col">Centre Code</th>
                                     </tr>
                                 </thead>
-                                <?php
-                                $query = "select csub.centre_code
-                                      from centre_subsidies csub 
-                                      where not exists (  
-                                        select subsidy_category 
-                                        from govt_subsidies 
-                                        where not exists ( 
-                                            select csub1.centre_code 
-                                            from centre_subsidies csub1 
-                                            where csub.centre_code = csub1.centre_code and 
-                                            subsidy_category = govt_subsidies.subsidy_category )) 
-                                      group by csub.centre_code";
-//                                $query1 = "select count(csub.centre_code)/12 as hello
-//                                       from centre_subsidies csub 
-//                                       where not exists (  
-//                                        select subsidy_category 
-//                                        from govt_subsidies 
-//                                        where not exists ( 
-//                                            select csub1.centre_code    
-//                                            from centre_subsidies csub1 
-//                                            where csub.centre_code = csub1.centre_code and 
-//                                            subsidy_category = govt_subsidies.subsidy_category ))";
 
-                                $result = mysqli_query($connect, $query);
-                                $result1 = mysqli_query($connect, $query1);
-                                if ($connect->connect_error) {
-                                    $errorMsg = "Connection failed: " . $connect->connect_error;
-                                    $success = false;
-                                }
-                                while ($row = mysqli_fetch_assoc($result)) {
-                                    echo "<tbody><tr><th class='row'>" . $row["centre_code"] . "</th></tr></tbody>";
+                                <?php
+                                $collection = $mongo->alfredng_db->centre;
+
+                                $pipeline23 = [
+                                    [
+                                        '$match' => [
+                                            'centre_subsidies' => ['$size' => 12]
+                                        ]],
+                                    ['$group' => ['_id' => '$centre_code']]
+                                ];
+                                $result23 = $collection->aggregate($pipeline23);
+                                foreach ($result23 as $pipeline23) {                          
+                                    echo "<tbody><tr><th class='row'>" . $pipeline23->_id . "</th></tr></tbody>";
                                 }
                                 ?>
+
                             </table>
-                              <?php
-//                            while ($row = mysqli_fetch_assoc($result1)) {
-//                                echo "<p>" . "Count:" . $row["hello"] . "</p>";
-//                            }
-//                            ?> 
                         </div>
                     </div>
                     <div class="col-md-2 "></div>
                 </div>
             </div>
-                <!-- Display of piechart and table data End -->
+            <!-- Display of piechart and table data End -->
 
 
 
             <!--Footer-->
-            <?php
-            include 'footer.inc.php';
-            ?>
+<?php
+include 'footer.inc.php';
+?>
             <!--Footer End-->
         </main>
     </body>

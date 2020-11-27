@@ -10,11 +10,11 @@ if ($connect->connect_error) {
     $query = "select government_subsidy, count(*) as hello from centre group by government_subsidy;";
     $result = mysqli_query($connect, $query);
     
-    $query1 = "select count(csub.centre_code)/12 as hello
+    $query1 = "select count(csub.centre_code)/count(distinct(subsidy_category)) as hello
 from centre_subsidies csub where not exists (  select subsidy_category from govt_subsidies where not exists ( select csub1.centre_code from centre_subsidies csub1 where csub.centre_code = csub1.centre_code and subsidy_category = govt_subsidies.subsidy_category ));";
     $result1 = mysqli_query($connect, $query1);
 
-    $query2 = "SELECT (SELECT COUNT(*) FROM centre) - (select count(csub.centre_code)/12 
+    $query2 = "SELECT (SELECT COUNT(*) FROM centre) - (select count(csub.centre_code)/count(distinct(subsidy_category))
 from centre_subsidies csub where not exists (  select subsidy_category from govt_subsidies where not exists ( select csub1.centre_code from centre_subsidies csub1 where csub.centre_code = csub1.centre_code and subsidy_category = govt_subsidies.subsidy_category ))) as hello2;";
     $result2 = mysqli_query($connect, $query2);
 }
