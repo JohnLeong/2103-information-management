@@ -24,7 +24,7 @@ and open the template in the editor.
     <body>
         <!--  navigation  --> 
         <?php
-        require_once('../protected/config.php');
+        require_once('../protected/configmdb.php');
         include 'nav.inc.php';
         ?>
         <!--  navigation end  --> 
