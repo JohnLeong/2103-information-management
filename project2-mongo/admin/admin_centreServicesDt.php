@@ -17,11 +17,12 @@ function sanitize_input($data) {
     return $data;
 }
 session_start();
+
 if(isset($_POST['dataString'])) {
     $_SESSION['curUserData'] = $_POST['dataString'];
     echo $_SESSION['curUserData'];
 }else{
-    header("Location: ../homepage.php");
+//    header("Location: ../homepage.php");
 }
 
 
