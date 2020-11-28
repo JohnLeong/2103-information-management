@@ -1,74 +1,75 @@
-  <?php
-require_once('../protected/config.php');
-$connect = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME);
-if ($connect->connect_error) {
-    $errorMsg = "Connection failed: " . $connect->connect_error;
-    $success = false;
-} else {
+<?php
+require 'vendor/autoload.php';
+require_once('../protected/configmdb.php');
+$collection = $mongo->alfredng_db->centre;
 
-//$connect = mysqli_connect("localhost", "root", "", "testing");
-    $query = "select government_subsidy, count(*) as hello from centre group by government_subsidy;";
-    $result = mysqli_query($connect, $query);
-    
-    $query1 = "select count(csub.centre_code)/12 as hello
-from centre_subsidies csub where not exists (  select subsidy_category from govt_subsidies where not exists ( select csub1.centre_code from centre_subsidies csub1 where csub.centre_code = csub1.centre_code and subsidy_category = govt_subsidies.subsidy_category ));";
-    $result1 = mysqli_query($connect, $query1);
-
-    $query2 = "SELECT (SELECT COUNT(*) FROM centre) - (select count(csub.centre_code)/12 
-from centre_subsidies csub where not exists (  select subsidy_category from govt_subsidies where not exists ( select csub1.centre_code from centre_subsidies csub1 where csub.centre_code = csub1.centre_code and subsidy_category = govt_subsidies.subsidy_category ))) as hello2;";
-    $result2 = mysqli_query($connect, $query2);
-}
 ?>  
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-  <script type="text/javascript">
-            google.charts.load('current', {'packages': ['corechart']});
-            google.charts.setOnLoadCallback(drawChart_jl);
-            google.charts.setOnLoadCallback(drawChart1_jl);
+<script type="text/javascript">
+    google.charts.load('current', {'packages': ['corechart']});
+    google.charts.setOnLoadCallback(drawChart_jl);
+    google.charts.setOnLoadCallback(drawChart1_jl);
 
-            function drawChart_jl() {
+    function drawChart_jl() {
 
-                var data = google.visualization.arrayToDataTable([
-                    ['Govt_subsidies', 'YEs/No'],
+        var data = google.visualization.arrayToDataTable([
+            ['Govt_subsidies', 'Yes/No'],
 <?php
-while ($row = mysqli_fetch_array($result)) {
-    echo "['" . $row["government_subsidy"] . "', " . $row["hello"] . "],";
+
+$result = array(
+    array('$group' => array('_id' => '$government_subsidy',
+            'count' => array('$sum' => 1))));
+$cursor1 = $collection->aggregate($result);
+foreach ($cursor1 as $result) {
+    if (isset($result->_id)) {
+        echo "['" . $result->_id . "', " .  $result->count . "],";
+    }
 }
+
 ?>
-                ]);
+        ]);
 
-                var options = {
-                    title: 'Childcare Centre provides Government Subsidies'
-                };
+        var options = {
+            title: 'Childcare Centre provides Government Subsidies'
+        };
 
-                var chart = new google.visualization.PieChart(document.getElementById('govt_subsidies_piechart'));
+        var chart = new google.visualization.PieChart(document.getElementById('govt_subsidies_piechart'));
 
-                chart.draw(data, options);
-            }
+        chart.draw(data, options);
+    }
 
-            function drawChart1_jl() {
+    function drawChart1_jl() {
 
 
-                var data = google.visualization.arrayToDataTable([
-                    ['Provides_subsidies', 'count'],
-
+        var data = google.visualization.arrayToDataTable([
+            ['Provides_subsidies', 'count'],
 <?php
-while ($row = mysqli_fetch_array($result1)) {
-    echo "['" . 'YES' . "', " . $row["hello"] . "],";
-}
-while ($row = mysqli_fetch_array($result2)) {
-    echo "['" . 'NO' . "', " . $row["hello2"] . "],";
-}
+
+$pipeline = [
+    [
+        '$match' => [
+            'centre_subsidies' => ['$size' => 12]
+        ]
+    ]
+];
+$result2 = $collection->aggregate($pipeline);
+$yes_results = count($result2->toArray());
+$total_result = $collection->count();
+$no_result = $total_result - $yes_results;
+echo "['YES', " .  $yes_results . "],";
+echo "['NO', " .  $no_result . "],";
+
 ?>
-                ]);
+        ]);
 
-                var options = {
-                    title: 'Childcare Centre provides ALL Government Subsidies'
-                };
+        var options = {
+            title: 'Childcare Centre provides ALL Government Subsidies'
+        };
 
-                var chart = new google.visualization.PieChart(document.getElementById('all_govt_subsidies_piechart1'));
+        var chart = new google.visualization.PieChart(document.getElementById('all_govt_subsidies_piechart1'));
 
-                chart.draw(data, options);
-            }
+        chart.draw(data, options);
+    }
 
 
-        </script>
+</script>

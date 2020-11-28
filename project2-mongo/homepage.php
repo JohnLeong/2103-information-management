@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <?php
-require_once('../protected/config.php');
+require_once('../protected/configmdb.php');
 ?>
 
 <html lang="en">
