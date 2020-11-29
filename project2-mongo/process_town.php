@@ -62,9 +62,7 @@ $pipelineBar = array(
         var data = google.visualization.arrayToDataTable([
             ['Town', 'Average  Fees'],
 <?php
-//while ($row = mysqli_fetch_array($result)) {
-//    echo "['" . $row["town_name"] . "', " . $row["ROUND(AVG(centre_service.fees),2)"] . "],";
-//}
+
 $cursorBar = $collection->aggregate($pipelineBar);
 foreach ($cursorBar as $pipelineBar) {
     if (isset($pipelineBar->_id)) {
@@ -100,9 +98,7 @@ foreach ($cursorBar as $pipelineBar) {
         var data = google.visualization.arrayToDataTable([
             ['Town', 'Number of Centres'],
 <?php
-//while ($row = mysqli_fetch_array($result1)) {
-//    echo "['" . $row["town_name"] . "', " . $row["count_centre_code"] . "],";
-//}
+
 $cursorPie = $collection->aggregate($pipelinePie);
 foreach ($cursorPie as $pipelinePie) {
     if (isset($pipelinePie->_id)) {
