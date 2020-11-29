@@ -1,12 +1,38 @@
 <?php
-require_once('../protected/config.php');
-$conn = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
-if ($conn->connect_error) {
-    $errorMsg = "Connection failed: " . $conn->connect_error;
-    $success = false;
-} else {
-    $success = true;
-}
+require_once('../protected/configmdb.php');
+
+$collection = $mongo->alfredng_db->centre;
+$pipelineTable = array(
+    array(
+        '$lookup' => array(
+            'from' => 'centre_service',
+            'localField' => 'centre_code',
+            'foreignField' => 'centre_code',
+            'as' => 'services')
+    ),
+    array(
+        '$addFields' => array(
+            'services' => array('$avg' => '$services.fees')
+        )
+    ),
+    array(
+        '$group' => array('_id' => '$hdb_town',
+            'count' => array('$sum' => 1),
+            'avgFees' => array('$avg' => '$services')
+        )
+    ),
+//    array(
+//        '$project' => array('_id' => 0,
+//            'town_name' => '$_id',
+//            'avgFees' => 1,
+//            'count' => 1,
+//            'sum' => 1,
+//            'avg' => 1)
+//    ),
+    array(
+        '$sort' => array('_id' => 1)
+    )
+);
 ?>
 <!DOCTYPE html>  
 <html>
@@ -68,26 +94,19 @@ if ($conn->connect_error) {
                                 </tr>
                             </thead>
                             <?php
-                            $query = "SELECT town_name,COUNT(DISTINCT(centre.centre_code)),  ROUND(AVG(centre_service.fees),2) FROM centre "
-                                    . "JOIN centre_service ON centre.centre_code=centre_service.centre_code "
-                                    . "JOIN hdb_town ON LEFT(centre.postal_code,2)=idhdb_town "
-                                    . "GROUP BY town_name;";
-                      
-                            $result = mysqli_query($connect, $query);
-                            
-                            if ($connect->connect_error) {
-                                $errorMsg = "Connection failed: " . $connect->connect_error;
-                                $success = false;
-                            }
-                            while ($row = mysqli_fetch_assoc($result)) {
-                                echo "<tbody><tr><td class='row'>" . $row["town_name"] . "</td><td class='row'>".$row["COUNT(DISTINCT(centre.centre_code))"]."</td><td class'row'>$".$row["ROUND(AVG(centre_service.fees),2)"]."</td></tr></tbody>";
+//                            
+                            $cursorTable = $collection->aggregate($pipelineTable);
+                            foreach ($cursorTable as $pipelineTable) {
+                                if (isset($pipelineTable->_id)) {
+                                    echo "<tbody><tr><td class='row'>" . $pipelineTable->_id . "</td><td class='row'>" . $pipelineTable->count . "</td><td class'row'>$" . $pipelineTable->avgFees . "</td></tr></tbody>";
+                                }
                             }
                             ?>
                         </table>
-                        
+
                         <!-- Display of table data of Town name, Frequency of Centers and Average Fees group by Town Name End  -->
                     </div>
-                   
+
                 </div> 
             </div>
 
