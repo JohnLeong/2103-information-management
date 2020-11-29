@@ -303,8 +303,6 @@ define("results_per_page", 10);
                                     }
 
 
-                                    $num_results = 0;
-
                                     $centre_collection = $mongo->alfredng_db->centre;
                                     $count_mongo = $centre_collection->count($mongoQuery);
                                     $num_results = $count_mongo;
@@ -314,11 +312,15 @@ define("results_per_page", 10);
 
                                     $start_page = ($page - 1) * results_per_page;
 
-                                    $mongo_results = $centre_collection->find($mongoQuery, ["limit" => results_per_page, "skip" => $start_page]);
+                                    $mongo_results = $centre_collection->aggregate([array('$match' => (object)$mongoQuery)
+                                        , array('$addFields' => array('service_avg_fee' => array('$cond' => array(array('$isArray' => '$centre_service'), array('$avg' => '$centre_service.fees'), "NA")) ))
+                                        , array('$limit' => $start_page + results_per_page), array('$skip' => $start_page)
+                                        , array('$sort' => array('service_avg_fee' => 1))]);
+                                    //$mongo_results = $centre_collection->find($mongoQuery, ["limit" => results_per_page, "skip" => $start_page]);
                                     $show_pagination = false;
                                     foreach ($mongo_results as $row) {
                                         //echo $row["centre_name"] . "<br>";
-
+                                        //echo $row["service_avg_fee"] . '<br>';
                                         echo '<div class="col-xs-12 col-md-12 centre_card">';
                                         echo '<figure>';
 
@@ -339,7 +341,7 @@ define("results_per_page", 10);
                                         echo'<p class="card-text">Centre code: ' . $row["centre_code"] . '</p>';
                                         echo'<p class="card-text">Contact no.: ' . $row["centre_contact_no"] . '</p>';
                                         echo'<p class="card-text">Email address: ' . $row["centre_email_address"] . '</p>';
-                                        //echo'<p class="card-text">Average service fees: $' . number_format(floatval($row["avg_fees"]), 2) . '</p>';
+                                        echo'<p class="card-text">Average service fees: $' . number_format(floatval($row["service_avg_fee"]), 2) . '</p>';
 
                                         echo'</div>';
 
