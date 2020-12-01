@@ -18,18 +18,14 @@ $pipelinePie = array(
     )
 );
 $pipelineBar = array(
-    array(
-        '$lookup' => array(
-            'from' => 'centre_service',
-            'localField' => 'centre_code',
-            'foreignField' => 'centre_code',
-            'as' => 'services')
-    ),
-    array(
-        '$addFields' => array(
-            'services' => array('$avg' => '$services.fees')
-        )
-    ),
+   
+   array(
+       '$addFields' => array('services' =>
+           array('$cond' => array(
+               array('$isArray' => '$centre_service'),
+               array('$avg' => '$centre_service.fees'), 
+               "NA")) )
+       ),
     array(
         '$group' => array('_id' => '$hdb_town',
             'avgFees' => array('$avg' => '$services')

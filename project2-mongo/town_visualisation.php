@@ -3,18 +3,14 @@ require_once('../protected/configmdb.php');
 
 $collection = $mongo->alfredng_db->centre;
 $pipelineTable = array(
+
     array(
-        '$lookup' => array(
-            'from' => 'centre_service',
-            'localField' => 'centre_code',
-            'foreignField' => 'centre_code',
-            'as' => 'services')
-    ),
-    array(
-        '$addFields' => array(
-            'services' => array('$avg' => '$services.fees')
-        )
-    ),
+        '$addFields' => array('services' => 
+            array('$cond' => array(
+                array('$isArray' => '$centre_service'),
+                array('$avg' => '$centre_service.fees'),
+                "NA")) )
+        ),
     array(
         '$group' => array('_id' => '$hdb_town',
             'count' => array('$sum' => 1),
