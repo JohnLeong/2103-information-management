@@ -79,28 +79,26 @@ require_once('../protected/configmdb.php');
                     ['Type Of Service', 'Name'],
                 <?php
 
-                $collection = $mongo->alfredng_db->centre_service;
+                $collection = $mongo->alfredng_db->centre;
 
                 $pipeline1 = array(
-                                array( '$lookup' => array(
-                                    'from' => 'centre',
-                                    'localField' => 'centre_code',
-                                    'foreignField' => 'centre_code',
-                                    'as' => 'centre_code'
-                                )),
-                                array (
-                                  '$replaceRoot' => array( 'newRoot' => array( '$mergeObjects' => [ array( '$arrayElemAt' => [ '$centre_code', 0 ] ), '$$ROOT' ] ) )
-                                ),
-                                array ('$match' => array('food_offered' => 'na')),
-                    
-                                array( '$group' => array( '_id' => '$type_of_service', 'total' => array ( '$sum' => 1 )))
+                                    array(
+                                            '$match' => array( 'food_offered' => 'na')
+                                        ),
+                                        array(
+                                            '$unwind' => '$centre_service'
+                                        ),
+                                        array(   
+                                            '$group' => array( '_id' => '$centre_service.type_of_service', 'count' => array( '$sum' => 1))
+                                        )
+                                    
                     );
 
                 $cursor1 = $collection->aggregate($pipeline1);
 
                 foreach ($cursor1 as $pipeline1) {
                     if(isset($pipeline1->_id)){
-                        echo "['" . $pipeline1->_id. "', " . $pipeline1->total . "],";   
+                        echo "['" . $pipeline1->_id. "', " . $pipeline1->count . "],";   
                     } 
                 }
 
@@ -151,8 +149,8 @@ require_once('../protected/configmdb.php');
 
                         <!-- table of bar chart 1 Section  -->
                         <div id ="piechart_table">
-                            <h4>Average Fee of childcare center parents have to pay based on each type of citizenship (Singaporean, PR, Others)</h4>
-                            <table>
+                            <h4 style="position: relative; left: 100px;">Average Fee of childcare center parents have to pay based on each type of citizenship (Singaporean, PR, Others)</h4>
+                            <table style="position: relative; left: 150px;">
                                 <tr>
                                     <th>types of citizenship</th>
                                     <th>Average cost</th>
@@ -186,51 +184,48 @@ require_once('../protected/configmdb.php');
 
                     </div>
 
-                    <div class ="col-lg-6">
+                    <div class ="col-lg-6" >
                         <!-- Illustration of of bar chart 2 Section  -->
                         <div id='colchart_after' style='width: 650px; height: 600px; display: inline-block'></div>
 
                         <!-- table of bar chart 2 Section  -->
-                        <div id ="piechart_table">
-                            <h4>Name of childcare center that does not offer food for the child according to the type of service (full day services, half day services etc)</h4>
-                            <table id="example" class="display">
-                                <tr>
-                                    <th>Name of Centers </th>
-                                    <th>Type of Services</th>
-                                </tr>
+                        <div id ="piechart_table" class="table-wrapper-scroll-y my-custom-scrollbar" style="width:125%; ">
+                            <!--<div class=" table-wrapper-scroll-y my-custom-scrollbar">-->
+                            <h4 style="position: relative; left: 90px;">Name of childcare center that does not offer food for the child according to the type of service (full day services, half day services etc)</h4>
+                                
+                                    <table class="display" style="position: relative; left: 100px;">
+                                        <tr>
+                                            <th>Name of Centers </th>
+                                            <th>Type of Services</th>
+                                        </tr>
 
-                                <?php
-                                $collection1 = $mongo->alfredng_db->centre_service;
+                                        <?php
+                                        $collection1 = $mongo->alfredng_db->centre;
 
-                            $pipeline1 = array(
-                                array( '$lookup' => array(
-                                    'from' => 'centre',
-                                    'localField' => 'centre_code',
-                                    'foreignField' => 'centre_code',
-                                    'as' => 'centre_code'
-                                )),
-                                array (
-                                  '$replaceRoot' => array( 'newRoot' => array( '$mergeObjects' => [ array( '$arrayElemAt' => [ '$centre_code', 0 ] ), '$$ROOT' ] ) )
-                                ),
-                                array ('$match' => array('food_offered' => 'na')),
+                                        $pipeline1 = array(  
+                                            array(  
+                                                '$match' => array('food_offered' =>  'na')
+                                            ),
+                                            array(   
+                                                '$unwind' =>  '$centre_service' 
+                                            ),
 
-                               // {$sort:{type_of_service:1}},
+                                            array(  
+                                                 '$project' =>  array(  '_id' => '$centre_service.type_of_service', 'centre_name' =>  1)
+                                            )
+                                        );
 
-                               // {$group:{_id:"$centre_name"}},
+                                        $cursor1 = $collection1->aggregate($pipeline1);
 
-                                array( '$project' => array( 'type_of_service' => 1, 'centre_name' => 1) )
-                            );
-
-                            $cursor1 = $collection1->aggregate($pipeline1);
-
-                            foreach ($cursor1 as $pipeline1) {
-                                if(isset($pipeline1->type_of_service)){
-                                    echo "<tr><td>" . $pipeline1->type_of_service. "</td><td>". $pipeline1->centre_name. "</td></tr>";   
-                                } 
-                            }
-                            echo "</table>";
-                                ?>
-                            </table>        
+                                        foreach ($cursor1 as $pipeline1) {
+                                            if(isset($pipeline1->_id)){
+                                                echo "<tr><td>" . $pipeline1->_id. "</td><td>". $pipeline1->centre_name. "</td></tr>";   
+                                            } 
+                                        }
+                                        echo "</table>";
+                                            ?>
+                                            
+                                    </table>
                             <!-- table of bar chart 2 Section ends -->
                         </div>  
                     </div>
@@ -238,14 +233,14 @@ require_once('../protected/configmdb.php');
             </div>     
 
             <!--Footer-->
-<?php
-include 'footer.inc.php';
-?>
+
             <!--Footer End-->
         </main>
     </body>
 </html>
-
+<?php
+include 'footer.inc.php';
+?>
 
 
                        
